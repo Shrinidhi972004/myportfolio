@@ -263,7 +263,7 @@ const socials = [
   },
   {
   label: "Instagram",
-  url: "https://www.instagram.com/your_instagram_id/",
+  url: "https://www.instagram.com/Sh_ri_ni_dhi/",
   icon: (
     <svg width="22" height="22" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -379,7 +379,7 @@ export default function Contact() {
             <ContactIcon>{PhoneIcon}</ContactIcon>
             <DetailBody>
               <DetailLabel>Phone</DetailLabel>
-              <DetailValue>+91 98765 43210</DetailValue>
+              <DetailValue>+91 7204200386</DetailValue>
             </DetailBody>
           </ContactDetail>
           <ContactSocials>
