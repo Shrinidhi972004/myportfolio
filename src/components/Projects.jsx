@@ -241,8 +241,8 @@ const projects = [
     title: "Passwordless Auth System",
     desc: "Secure authentication using magic links for frictionless login.",
     longDesc: "This project implements passwordless authentication using secure magic links sent to the user’s email. Features include JWT-based validation, user management, rate-limiting, and a user-friendly UI built with React and Node.js. Fully open-source and ready for production environments.",
-    github: "https://github.com/yourusername/passwordless-auth",
-    demo: "https://passwordless-auth-demo.vercel.app/",
+    github: "https://github.com/Shrinidhi972004/passwordless-password-authentication-system.git",
+    demo: "https://passwordless-password-authentication.onrender.com",
     details: "A secure, production-ready authentication flow using magic links (email).",
     img: authImg
   },
