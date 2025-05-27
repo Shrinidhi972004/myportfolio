@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import authImg from "../assets/auth.png";
-import galleryImg from "../assets/gallery.png";
+import authImg from "../assets/auth.jpg";
+import galleryImg from "../assets/gallery.jpg";
 import catalogImg from "../assets/catalog.png";
 
 // Animated blue blob
@@ -254,15 +254,6 @@ const projects = [
     demo: "https://cloud-gallery-demo.vercel.app/",
     details: "Upload and organize media securely, with AWS S3 integration and user authentication.",
     img: galleryImg
-  },
-  {
-    title: "E-commerce Catalog API",
-    desc: "A robust RESTful API for managing products, categories, and orders.",
-    longDesc: "Spring Boot-based API supporting product/category CRUD, user registration, JWT authentication, cart, and orders. Try live API docs. Built with layered architecture, tested with Postman, and ready for deployment.",
-    github: "https://github.com/yourusername/ecommerce-catalog-api",
-    demo: "https://ecommerce-catalog-demo.vercel.app/",
-    details: "Built with Spring Boot. Try the live API docs and see example data.",
-    img: catalogImg
   }
 ];
 
