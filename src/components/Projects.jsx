@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import authImg from "../assets/auth.jpg";
 import galleryImg from "../assets/gallery.jpg";
-import catalogImg from "../assets/catalog.png";
+
 
 // Animated blue blob
 const AnimatedBlob = styled(motion.div)`
@@ -250,7 +250,7 @@ const projects = [
     title: "Cloud Gallery",
     desc: "A cloud-based gallery for secure photo and video management.",
     longDesc: "A full-stack gallery app to upload, organize, and securely store photos/videos. AWS S3 integration, user authentication, responsive React UI, and Node.js backend. Great for photographers, teams, or anyone needing cloud media storage.",
-    github: "https://github.com/yourusername/cloud-gallery",
+    github: "https://github.com/Shrinidhi972004/Shrinidhi972004-cloud-media-gallery-using-mern-stack-and-aws-s3.git",
     demo: "https://cloud-gallery-demo.vercel.app/",
     details: "Upload and organize media securely, with AWS S3 integration and user authentication.",
     img: galleryImg
