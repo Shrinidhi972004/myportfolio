@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import emailjs from "@emailjs/browser";
+import { sendEmail } from "../services/emailService"; // Import EmailJS logic
 
 // ---- Animated blue blob background ----
 const AnimatedBlob = styled(motion.div)`
@@ -114,7 +114,6 @@ const DetailValue = styled.div`
   color: #b5cdf6;
 `;
 
-// Socials row
 const ContactSocials = styled.div`
   display: flex;
   gap: 1.12rem;
@@ -140,7 +139,6 @@ const SocialBtn = styled.a`
   }
 `;
 
-// ----------- RIGHT FORM -----------
 const RightForm = styled.div`
   flex: 2;
   min-width: 350px;
@@ -223,7 +221,6 @@ const SendIcon = (
   </svg>
 );
 
-// --- ICONS for left ---
 const LocationIcon = (
   <svg width="28" height="28" fill="#2563eb" viewBox="0 0 24 24">
     <path d="M12 2C7.03 2 3 6.03 3 11c0 5.25 7.3 10.59 8.02 11.1a1.002 1.002 0 0 0 1.24 0C13.7 21.59 21 16.25 21 11c0-4.97-4.03-9-9-9zm0 17.88C10.07 18.15 5 13.89 5 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 2.89-5.07 7.15-7 8.88z"/>
@@ -241,7 +238,6 @@ const PhoneIcon = (
   </svg>
 );
 
-// ---- Socials (add your actual links) ----
 const socials = [
   {
     label: "LinkedIn",
@@ -262,38 +258,34 @@ const socials = [
     )
   },
   {
-  label: "Instagram",
-  url: "https://www.instagram.com/Sh_ri_ni_dhi/",
-  icon: (
-    <svg width="22" height="22" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="instagram-gradient" cx="32%" cy="106%" r="150%">
-          <stop offset="0%" stopColor="#ffd600"/>
-          <stop offset="10%" stopColor="#ff8a00"/>
-          <stop offset="50%" stopColor="#ff0069"/>
-          <stop offset="100%" stopColor="#d300c5"/>
-        </radialGradient>
-        <radialGradient id="purple-overlay" cx="70%" cy="10%" r="100%">
-          <stop offset="0%" stopColor="#4f5bd5" stopOpacity="0.8"/>
-          <stop offset="40%" stopColor="#962fbf" stopOpacity="0.4"/>
-          <stop offset="100%" stopColor="#d300c5" stopOpacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#instagram-gradient)"/>
-      <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#purple-overlay)"/>
-      <rect x="50" y="50" width="100" height="100" rx="20" ry="20" fill="none" stroke="white" strokeWidth="6"/>
-      <circle cx="100" cy="100" r="25" fill="none" stroke="white" strokeWidth="6"/>
-      <circle cx="130" cy="70" r="6" fill="white"/>
-    </svg>
-  )
-}
+    label: "Instagram",
+    url: "https://www.instagram.com/Sh_ri_ni_dhi/",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="instagram-gradient" cx="32%" cy="106%" r="150%">
+            <stop offset="0%" stopColor="#ffd600"/>
+            <stop offset="10%" stopColor="#ff8a00"/>
+            <stop offset="50%" stopColor="#ff0069"/>
+            <stop offset="100%" stopColor="#d300c5"/>
+          </radialGradient>
+          <radialGradient id="purple-overlay" cx="70%" cy="10%" r="100%">
+            <stop offset="0%" stopColor="#4f5bd5" stopOpacity="0.8"/>
+            <stop offset="40%" stopColor="#962fbf" stopOpacity="0.4"/>
+            <stop offset="100%" stopColor="#d300c5" stopOpacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#instagram-gradient)"/>
+        <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#purple-overlay)"/>
+        <rect x="50" y="50" width="100" height="100" rx="20" ry="20" fill="none" stroke="white" strokeWidth="6"/>
+        <circle cx="100" cy="100" r="25" fill="none" stroke="white" strokeWidth="6"/>
+        <circle cx="130" cy="70" r="6" fill="white"/>
+      </svg>
+    )
+  }
 ];
 
 // ----------- MAIN COMPONENT -----------
-const SERVICE_ID = "service_8aecp3r";
-const TEMPLATE_ID = "template_rp7zcno";
-const PUBLIC_KEY = "78A7obGxn0ew1u-Ow"; // aka User ID
-
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -307,13 +299,7 @@ export default function Contact() {
     setLoading(true);
 
     try {
-      await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
-        from_name: form.name,
-        from_email: form.email,
-        subject: form.subject,
-        message: form.message,
-      }, PUBLIC_KEY);
-
+      await sendEmail(form);
       alert("Message sent! I'll get back to you soon.");
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
