@@ -303,8 +303,11 @@ export default function Contact() {
       alert("Message sent! I'll get back to you soon.");
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
-      alert("There was an error sending your message. Please try again later.");
-    } finally {
+  console.error("EmailJS Error:", err); // <--- Add this!
+  alert("There was an error sending your message. Please try again later.");
+}
+
+     finally {
       setLoading(false);
     }
   }
