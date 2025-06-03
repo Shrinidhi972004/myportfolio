@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./portfolio-backend
+    container_name: my-backend
+    env_file:
+      - ./portfolio-backend/.env
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: my-frontend
+    ports:
+      - "6969:80"
+    depends_on:
+      - backend
+    environment:
+      # This will be available in your React app as process.env.REACT_APP_BACKEND_URL
+      - REACT_APP_BACKEND_URL=http://my-backend:5000
+    restart: unless-stopped

@@ -18,8 +18,7 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built app from builder
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom nginx config (optional, but recommended for SPA)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 
 EXPOSE 80
 

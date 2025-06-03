@@ -3,34 +3,17 @@ import { motion } from "framer-motion";
 import { FaJava, FaReact, FaNodeJs, FaAws, FaLinux } from "react-icons/fa";
 import { SiMongodb, SiPostgresql, SiDocker, SiSpringboot } from "react-icons/si";
 
-// Glassy animated blue blob
-const AnimatedBlob = styled(motion.div)`
-  position: absolute;
-  right: -160px;
-  top: -120px;
-  width: 370px;
-  height: 370px;
-  z-index: 0;
-  background: radial-gradient(circle at 70% 40%, #2563eb 0%, #1e40af 80%, #091a28 100%);
-  filter: blur(70px);
-  opacity: 0.24;
-  animation: blobMove 10s infinite alternate;
-  @keyframes blobMove {
-    0% { transform: scale(1) translateY(0px);}
-    100% { transform: scale(1.07) translateY(28px);}
-  }
-`;
-
+// --- Styles ---
 const AboutSection = styled.section`
   width: 100vw;
-  min-height: 90vh;
-  padding: 7rem 0 4.7rem 0;
+  min-height: 100vh;
   background: #091a28;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  padding: 7rem 0 4.7rem 0;
 `;
 
 const GlassCard = styled(motion.div)`
@@ -45,6 +28,7 @@ const GlassCard = styled(motion.div)`
   z-index: 2;
   backdrop-filter: blur(18px) saturate(1.12);
   border: 2.3px solid #1e293b;
+  text-align: center;
 `;
 
 const Heading = styled.h2`
@@ -53,7 +37,6 @@ const Heading = styled.h2`
   letter-spacing: -0.01em;
   color: #fff;
   margin-bottom: 2.1rem;
-  text-align: center;
 `;
 
 const AboutText = styled(motion.p)`
@@ -102,7 +85,6 @@ const SkillCard = styled(motion.div)`
   }
 `;
 
-// Skill icon wrapper for icons that need a blue background (Linux, PostgreSQL)
 const SkillIconWrapper = styled.span`
   background: #2563eb;
   border-radius: 50%;
@@ -118,7 +100,6 @@ const skills = [
   { name: "React", icon: <FaReact color="#61dafb" /> },
   { name: "Node.js", icon: <FaNodeJs color="#65b94b" /> },
   { name: "AWS", icon: <FaAws color="#ff9900" /> },
-  // Linux: White penguin inside blue circle
   { name: "Linux", icon: (
       <SkillIconWrapper>
         <FaLinux color="#fff" />
@@ -127,7 +108,6 @@ const skills = [
   },
   { name: "Docker", icon: <SiDocker color="#2496ed" /> },
   { name: "MongoDB", icon: <SiMongodb color="#4fa13e" /> },
-  // PostgreSQL: White elephant inside blue circle
   { name: "PostgreSQL", icon: (
       <SkillIconWrapper>
         <SiPostgresql color="#fff" />
@@ -139,20 +119,6 @@ const skills = [
 export default function About() {
   return (
     <AboutSection id="about">
-      <AnimatedBlob
-        animate={{
-          scale: [1, 1.09, 1],
-          y: [0, 28, 0],
-          x: [0, 13, -8, 0],
-          rotate: [0, 7, -4, 0],
-        }}
-        transition={{
-          duration: 11,
-          repeat: Infinity,
-          repeatType: "loop",
-          ease: "easeInOut",
-        }}
-      />
       <GlassCard
         initial={{ opacity: 0, y: 70, scale: 0.98 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -172,7 +138,6 @@ export default function About() {
           Outside of work, you’ll find me geeking out over new tools, sharing tips with friends, or just enjoying the process of turning an idea into a real, working project.<br/>
           Let’s connect—especially if you love building, learning, or talking DevOps!<br/>
         </AboutText>
-        
         <SkillsGrid>
           {skills.map((skill, idx) => (
             <SkillCard

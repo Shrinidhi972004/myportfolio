@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { sendEmail } from "../services/emailService"; // Import EmailJS logic
 
 // ---- Animated blue blob background ----
 const AnimatedBlob = styled(motion.div)`
@@ -285,7 +284,8 @@ const socials = [
   }
 ];
 
-// ----------- MAIN COMPONENT -----------
+const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -299,15 +299,17 @@ export default function Contact() {
     setLoading(true);
 
     try {
-      await sendEmail(form);
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed to send");
       alert("Message sent! I'll get back to you soon.");
       setForm({ name: "", email: "", subject: "", message: "" });
     } catch (err) {
-  console.error("EmailJS Error:", err); // <--- Add this!
-  alert("There was an error sending your message. Please try again later.");
-}
-
-     finally {
+      alert("There was an error sending your message. Please try again later.");
+    } finally {
       setLoading(false);
     }
   }
@@ -431,3 +433,4 @@ export default function Contact() {
     </ContactSection>
   );
 }
+
