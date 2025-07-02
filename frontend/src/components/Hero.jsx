@@ -2,8 +2,43 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import Tilt from "react-parallax-tilt";
 import myPhoto from "../assets/myprofile.jpeg";
+import FloatingTechIcons from "./FloatingTechIcons";
 
-// --- Download Resume Button ---
+const slideFromRight = {
+  hidden: { opacity: 0, x: 50 },
+  visible: { 
+    opacity: 1, 
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.25, 0.46, 0.45, 0.94]
+    }
+  }
+};
+
+const slideFromLeft = {
+  hidden: { opacity: 0, x: -50 },
+  visible: { 
+    opacity: 1, 
+    x: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.25, 0.46, 0.45, 0.94]
+    }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.3
+    }
+  }
+};
+
 const ResumeButton = styled.a`
   margin-top: 1.4rem;
   display: inline-flex;
@@ -32,8 +67,6 @@ const DownloadIcon = () => (
   </svg>
 );
 
-
-// --- Animated blue gradient blob, NO camo, just a pure blue glassy look
 const AnimatedBlob = styled(motion.div)`
   position: absolute;
   left: -120px;
@@ -141,18 +174,17 @@ const CTA = styled(motion.button)`
 `;
 
 export default function Hero({ setActiveSection }) {
-  // The handler for smooth scroll + update navbar
   const handleProjectsClick = () => {
     const target = document.getElementById("projects");
     if (target) {
       target.scrollIntoView({ behavior: "smooth" });
-      // Update navbar highlight
       setActiveSection && setActiveSection("projects");
     }
   };
 
   return (
     <HeroWrapper>
+      <FloatingTechIcons />
       <AnimatedBlob
         animate={{
           scale: [1, 1.10, 1],
@@ -190,37 +222,57 @@ export default function Hero({ setActiveSection }) {
           />
         </ProfileTilt>
         <HeroInfo>
-          <Name
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
           >
-            Hi, I'm Shrinidhi Upadhyaya
-          </Name>
-          <AnimatedSubtitle
-            initial={{ opacity: 0, x: 60 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.55, duration: 0.8 }}
+            <Name
+              variants={slideFromRight}
+            >
+              Hi, I'm Shrinidhi Upadhyaya
+            </Name>
+          </motion.div>
+          <motion.div
+            variants={slideFromRight}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.4 }}
           >
-            A developer & DevOps enthusiast who crafts clean, interactive web apps.<br />
-            <span>
-              React, Java, Node.js, Cloud & 3D UI enthusiast.
-            </span>
-          </AnimatedSubtitle>
-          <CTA
-            as="button"
-            type="button"
-            whileHover={{ scale: 1.07, y: -4 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={handleProjectsClick}
+            <AnimatedSubtitle>
+              A developer & DevOps enthusiast who crafts clean, interactive web apps.<br />
+              <span>
+                React, Java, Node.js, Cloud & 3D UI enthusiast.
+              </span>
+            </AnimatedSubtitle>
+          </motion.div>
+          <motion.div
+            variants={slideFromLeft}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.6 }}
           >
-            See My Projects
-          </CTA>
-          {/* --- Download Resume Button --- */}
-          <ResumeButton href="/resume.pdf" download>
-            <DownloadIcon />
-            Download Resume
-          </ResumeButton>
+            <CTA
+              as="button"
+              type="button"
+              whileHover={{ scale: 1.07, y: -4 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={handleProjectsClick}
+            >
+              See My Projects
+            </CTA>
+          </motion.div>
+          <motion.div
+            variants={slideFromRight}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.8 }}
+          >
+            <ResumeButton href="/resume.pdf" download>
+              <DownloadIcon />
+              Download Resume
+            </ResumeButton>
+          </motion.div>
         </HeroInfo>
       </GlassCard>
     </HeroWrapper>

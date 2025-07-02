@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useTheme } from "../contexts/DarkThemeContext";
 
 // Nav links config
 const navLinks = [
@@ -22,11 +23,11 @@ const NavbarContainer = styled(motion.nav)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(9,26,40,0.97);
-  box-shadow: 0 3px 24px 0 rgba(37,99,235,0.10);
+  background: ${props => props.theme?.colors?.backgroundNavbar || 'rgba(9,26,40,0.97)'};
+  box-shadow: 0 3px 24px 0 ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.10)'};
   backdrop-filter: blur(18px) saturate(1.05);
-  border-bottom: 1.5px solid rgba(37,99,235,0.10);
-  transition: background 0.17s;
+  border-bottom: 1.5px solid ${props => props.theme?.colors?.border || 'rgba(37,99,235,0.10)'};
+  transition: all 0.3s ease;
 `;
 
 const NavContent = styled.div`
@@ -40,13 +41,13 @@ const NavContent = styled.div`
 const Logo = styled.a`
   font-size: 2rem;
   font-weight: 900;
-  color: #1e90ff;
+  color: ${props => props.theme?.colors?.primary || '#1e90ff'};
   text-decoration: none;
   letter-spacing: -0.02em;
   margin-right: 2.7rem;
   cursor: pointer;
   transition: color 0.17s;
-  &:hover { color: #2563eb; }
+  &:hover { color: ${props => props.theme?.colors?.primaryHover || '#2563eb'}; }
 `;
 
 const NavLinks = styled.ul`
@@ -67,7 +68,7 @@ const NavItem = styled.li`
 `;
 
 const NavLink = styled(motion.a)`
-  color: #aac8f5;
+  color: ${props => props.theme?.colors?.secondary || '#aac8f5'};
   font-size: 1.13rem;
   font-weight: 700;
   text-decoration: none;
@@ -76,8 +77,8 @@ const NavLink = styled(motion.a)`
   border-radius: 8px;
   transition: color 0.15s, background 0.16s;
   &:hover {
-    color: #1e90ff;
-    background: #102a43;
+    color: ${props => props.theme?.colors?.primary || '#1e90ff'};
+    background: ${props => props.theme?.colors?.backgroundSecondary || '#102a43'};
   }
 `;
 
@@ -87,7 +88,10 @@ const Underline = styled(motion.div)`
   bottom: -3px;
   height: 3px;
   border-radius: 2px;
-  background: linear-gradient(90deg,#2563eb 30%,#1e90ff 100%);
+  background: ${props => props.theme?.isDark 
+    ? 'linear-gradient(90deg,#2563eb 30%,#1e90ff 100%)'
+    : 'linear-gradient(90deg,#3b82f6 30%,#2563eb 100%)'
+  };
 `;
 
 // Hamburger menu for mobile
@@ -107,7 +111,7 @@ const Hamburger = styled.div`
 const Bar = styled.div`
   width: 22px;
   height: 3px;
-  background: #2563eb;
+  background: ${props => props.theme?.colors?.primary || '#2563eb'};
   margin: 3px 0;
   border-radius: 2px;
   transition: all 0.18s;
@@ -143,6 +147,12 @@ function scrollToSectionWithOffset(hash, offset = NAVBAR_HEIGHT) {
 export default function Navbar() {
   const [active, setActive] = useState("Home");
   const [menuOpen, setMenuOpen] = useState(false);
+  const { currentTheme, isDark } = useTheme();
+  const { scrollY } = useScroll();
+  
+  // Enhanced scroll effect for navbar
+  const navbarOpacity = useTransform(scrollY, [0, 100], [0.97, 0.85]);
+  const navbarBlur = useTransform(scrollY, [0, 100], [18, 25]);
 
   // --- SCROLL SPY LOGIC ---
   useEffect(() => {
@@ -184,26 +194,35 @@ export default function Navbar() {
   return (
     <>
       <NavbarContainer
+        theme={currentTheme}
+        style={{
+          backdropFilter: useTransform(navbarBlur, latest => `blur(${latest}px) saturate(1.05)`),
+          background: isDark 
+            ? `rgba(9,26,40,${useTransform(navbarOpacity, latest => latest).get()})`
+            : `rgba(255,255,255,${useTransform(navbarOpacity, latest => latest).get()})`
+        }}
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
         <NavContent>
-          <Logo href="#home" onClick={() => handleNavClick("Home", "#home")}>Shrinidhi</Logo>
+          <Logo theme={currentTheme} href="#home" onClick={() => handleNavClick("Home", "#home")}>Shrinidhi</Logo>
           <NavLinks>
             {navLinks.map(({ label, to }) => (
               <NavItem key={label}>
                 <NavLink
+                  theme={currentTheme}
                   onClick={e => {
                     e.preventDefault();
                     handleNavClick(label, to);
                   }}
                   whileTap={{ scale: 0.96 }}
-                  style={active === label ? { color: "#1e90ff" } : {}}
+                  style={active === label ? { color: currentTheme.colors.primary } : {}}
                 >
                   {label}
                   {active === label && (
                     <Underline
+                      theme={currentTheme}
                       layoutId="nav-underline"
                       initial={false}
                       transition={{ type: "spring", stiffness: 350, damping: 30 }}
@@ -214,9 +233,9 @@ export default function Navbar() {
             ))}
           </NavLinks>
           <Hamburger onClick={() => setMenuOpen(!menuOpen)}>
-            <Bar style={{ transform: menuOpen ? "rotate(42deg) translate(5px, 6px)" : "none" }} />
-            <Bar style={{ opacity: menuOpen ? 0 : 1 }} />
-            <Bar style={{ transform: menuOpen ? "rotate(-42deg) translate(5px, -7px)" : "none" }} />
+            <Bar theme={currentTheme} style={{ transform: menuOpen ? "rotate(42deg) translate(5px, 6px)" : "none" }} />
+            <Bar theme={currentTheme} style={{ opacity: menuOpen ? 0 : 1 }} />
+            <Bar theme={currentTheme} style={{ transform: menuOpen ? "rotate(-42deg) translate(5px, -7px)" : "none" }} />
           </Hamburger>
         </NavContent>
       </NavbarContainer>
@@ -230,9 +249,10 @@ export default function Navbar() {
           {navLinks.map(({ label, to }) => (
             <NavLink
               key={label}
+              theme={currentTheme}
               style={{
                 fontSize: "1.21rem",
-                color: active === label ? "#1e90ff" : "#aac8f5",
+                color: active === label ? currentTheme.colors.primary : currentTheme.colors.secondary,
                 fontWeight: active === label ? 900 : 700
               }}
               onClick={e => {

@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "../contexts/DarkThemeContext";
 
 // ---- Animated blue blob background ----
-const AnimatedBlob = styled(motion.div)`
+const AnimatedBlob = styled(motion.div).withConfig({
+  shouldForwardProp: (prop) => !['animate', 'transition'].includes(prop),
+})`
   position: absolute;
   right: -100px;
   bottom: -110px;
@@ -51,30 +54,45 @@ const SpreadRow = styled.div`
   }
 `;
 
-const LeftInfo = styled.div`
+const LeftInfo = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   flex: 1;
   min-width: 330px;
   max-width: 420px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background: rgba(16,42,67,0.75);
+  background: ${props => props.isDark 
+    ? 'rgba(16,42,67,0.75)' 
+    : 'rgba(255,255,255,0.85)'
+  };
   border-radius: 2rem;
-  box-shadow: 0 4px 30px #2563eb18;
-  border: 2px solid #1e293b;
+  box-shadow: ${props => props.isDark
+    ? '0 4px 30px #2563eb18'
+    : '0 4px 30px rgba(0,0,0,0.1)'
+  };
+  border: ${props => props.isDark
+    ? '2px solid #1e293b'
+    : '2px solid #e2e8f0'
+  };
   padding: 2.4rem 2.2rem 2.2rem 2.2rem;
 `;
 
-const ContactHeading = styled.h2`
+const ContactHeading = styled.h2.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   font-size: 2rem;
   font-weight: 700;
-  color: #fff;
+  color: ${props => props.isDark ? '#fff' : '#1e293b'};
   margin-bottom: 1.15rem;
 `;
 
-const ContactBlurb = styled.p`
+const ContactBlurb = styled.p.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   font-size: 1.12rem;
-  color: #aac8f5;
+  color: ${props => props.isDark ? '#aac8f5' : '#64748b'};
   margin-bottom: 2.2rem;
   line-height: 1.65;
 `;
@@ -85,8 +103,10 @@ const ContactDetail = styled.div`
   margin-bottom: 1.6rem;
 `;
 
-const ContactIcon = styled.div`
-  background: #2563eb18;
+const ContactIcon = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
+  background: ${props => props.isDark ? '#2563eb18' : '#3b82f615'};
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -94,6 +114,11 @@ const ContactIcon = styled.div`
   width: 46px;
   height: 46px;
   margin-right: 1.2rem;
+  transition: background 0.3s ease;
+  
+  &:hover {
+    background: ${props => props.isDark ? '#2563eb25' : '#3b82f625'};
+  }
 `;
 
 const DetailBody = styled.div`
@@ -101,16 +126,20 @@ const DetailBody = styled.div`
   flex-direction: column;
 `;
 
-const DetailLabel = styled.div`
+const DetailLabel = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   font-size: 1.13rem;
   font-weight: bold;
-  color: #fff;
+  color: ${props => props.isDark ? '#fff' : '#1e293b'};
   margin-bottom: 0.15rem;
 `;
 
-const DetailValue = styled.div`
+const DetailValue = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   font-size: 1.06rem;
-  color: #b5cdf6;
+  color: ${props => props.isDark ? '#b5cdf6' : '#64748b'};
 `;
 
 const ContactSocials = styled.div`
@@ -119,43 +148,63 @@ const ContactSocials = styled.div`
   margin-top: 2.2rem;
 `;
 
-const SocialBtn = styled.a`
+const SocialBtn = styled.a.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1e293b;
-  color: #2563eb;
+  background: ${props => props.isDark ? '#1e293b' : '#f1f5f9'};
+  color: ${props => props.isDark ? '#2563eb' : '#3b82f6'};
   width: 44px;
   height: 44px;
   border-radius: 50%;
   font-size: 1.25rem;
-  transition: background 0.17s, color 0.17s, box-shadow 0.17s;
+  transition: all 0.17s ease;
   text-decoration: none;
-  box-shadow: 0 1px 6px rgba(37,99,235,0.09);
+  box-shadow: ${props => props.isDark
+    ? '0 1px 6px rgba(37,99,235,0.09)'
+    : '0 1px 6px rgba(0,0,0,0.1)'
+  };
+  
   &:hover {
-    background: #2563eb;
-    color: #fff;
+    background: ${props => props.isDark ? '#2563eb' : '#3b82f6'};
+    color: ${props => props.isDark ? '#fff' : '#fff'};
+    transform: translateY(-2px);
   }
 `;
 
-const RightForm = styled.div`
+const RightForm = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   flex: 2;
   min-width: 350px;
   max-width: 680px;
-  background: rgba(16,42,67,0.62);
+  background: ${props => props.isDark 
+    ? 'rgba(16,42,67,0.62)' 
+    : 'rgba(255,255,255,0.75)'
+  };
   border-radius: 2rem;
-  border: 2px solid #1e293b;
-  box-shadow: 0 6px 38px #2563eb16;
+  border: ${props => props.isDark
+    ? '2px solid #1e293b'
+    : '2px solid #e2e8f0'
+  };
+  box-shadow: ${props => props.isDark
+    ? '0 6px 38px #2563eb16'
+    : '0 6px 38px rgba(0,0,0,0.08)'
+  };
   display: flex;
   flex-direction: column;
   align-items: stretch;
   padding: 2.5rem 2.7rem;
 `;
 
-const RightHeading = styled.h2`
+const RightHeading = styled.h2.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   font-size: 2rem;
   font-weight: 800;
-  color: #fff;
+  color: ${props => props.isDark ? '#fff' : '#1e293b'};
   margin-bottom: 2.2rem;
   text-align: left;
 `;
@@ -175,31 +224,72 @@ const Row = styled.div`
   }
 `;
 
-const Input = styled.input`
+const Input = styled.input.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   flex: 1;
   padding: 1.09rem;
-  border: 1px solid #2563eb33;
+  border: ${props => props.isDark 
+    ? '1px solid #2563eb33' 
+    : '1px solid #cbd5e1'
+  };
   border-radius: 0.7rem;
   font-size: 1.09rem;
-  background: #091a28;
-  color: #fff;
+  background: ${props => props.isDark ? '#091a28' : '#ffffff'};
+  color: ${props => props.isDark ? '#fff' : '#1e293b'};
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.isDark ? '#2563eb' : '#3b82f6'};
+    box-shadow: ${props => props.isDark
+      ? '0 0 0 3px rgba(37, 99, 235, 0.1)'
+      : '0 0 0 3px rgba(59, 130, 246, 0.1)'
+    };
+  }
+  
+  &::placeholder {
+    color: ${props => props.isDark ? '#64748b' : '#94a3b8'};
+  }
 `;
 
-const Textarea = styled.textarea`
+const Textarea = styled.textarea.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   padding: 1.09rem;
-  border: 1px solid #2563eb33;
+  border: ${props => props.isDark 
+    ? '1px solid #2563eb33' 
+    : '1px solid #cbd5e1'
+  };
   border-radius: 0.7rem;
   font-size: 1.09rem;
-  background: #091a28;
-  color: #fff;
+  background: ${props => props.isDark ? '#091a28' : '#ffffff'};
+  color: ${props => props.isDark ? '#fff' : '#1e293b'};
   min-height: 130px;
   resize: vertical;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  
+  &:focus {
+    outline: none;
+    border-color: ${props => props.isDark ? '#2563eb' : '#3b82f6'};
+    box-shadow: ${props => props.isDark
+      ? '0 0 0 3px rgba(37, 99, 235, 0.1)'
+      : '0 0 0 3px rgba(59, 130, 246, 0.1)'
+    };
+  }
+  
+  &::placeholder {
+    color: ${props => props.isDark ? '#64748b' : '#94a3b8'};
+  }
 `;
 
-const SubmitBtn = styled.button`
+const SubmitBtn = styled.button.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   padding: 1.12rem;
   background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
-  color: #fff;
+  color: ${props => props.isDark ? '#fff' : '#fff'};
   border: none;
   border-radius: 0.7rem;
   font-size: 1.15rem;
@@ -220,29 +310,31 @@ const SendIcon = (
   </svg>
 );
 
-const LocationIcon = (
-  <svg width="28" height="28" fill="#2563eb" viewBox="0 0 24 24">
+const LocationIcon = ({ isDark }) => (
+  <svg width="28" height="28" fill={isDark ? "#2563eb" : "#3b82f6"} viewBox="0 0 24 24">
     <path d="M12 2C7.03 2 3 6.03 3 11c0 5.25 7.3 10.59 8.02 11.1a1.002 1.002 0 0 0 1.24 0C13.7 21.59 21 16.25 21 11c0-4.97-4.03-9-9-9zm0 17.88C10.07 18.15 5 13.89 5 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 2.89-5.07 7.15-7 8.88z"/>
     <circle cx="12" cy="11" r="2" />
   </svg>
 );
-const EmailIcon = (
-  <svg width="28" height="28" fill="#2563eb" viewBox="0 0 24 24">
+
+const EmailIcon = ({ isDark }) => (
+  <svg width="28" height="28" fill={isDark ? "#2563eb" : "#3b82f6"} viewBox="0 0 24 24">
     <path d="M4 4h16c1.1 0 2 .9 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm0 2v.01L12 13l8-6.99V6H4zm16 2.25-7.09 6.18c-.3.26-.7.26-1 0L4 8.25V18h16V8.25z"/>
   </svg>
 );
-const PhoneIcon = (
-  <svg width="28" height="28" fill="#2563eb" viewBox="0 0 24 24">
+
+const PhoneIcon = ({ isDark }) => (
+  <svg width="28" height="28" fill={isDark ? "#2563eb" : "#3b82f6"} viewBox="0 0 24 24">
     <path d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2a1.003 1.003 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20c0 1.1-.9 2-2 2C6.48 22 2 17.52 2 12c0-1.1.9-2 2-2h3a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.58a1.003 1.003 0 0 1-.24 1.01l-2.2 2.2z"/>
   </svg>
 );
 
-const socials = [
+const getSocialIcons = (isDark) => [
   {
     label: "LinkedIn",
     url: "https://www.linkedin.com/in/shrinidhi-upadhyaya-82114a26a/",
     icon: (
-      <svg width="22" height="22" fill="#2563eb" viewBox="0 0 24 24">
+      <svg width="22" height="22" fill={isDark ? "#2563eb" : "#3b82f6"} viewBox="0 0 24 24">
         <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.762 2.239 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.268c-.966 0-1.75-.804-1.75-1.732s.784-1.732 1.75-1.732c.965 0 1.75.804 1.75 1.732s-.785 1.732-1.75 1.732zm13.5 10.268h-3v-4.604c0-1.1-.021-2.516-1.533-2.516-1.535 0-1.77 1.198-1.77 2.434v4.686h-3v-9h2.881v1.232h.041c.401-.762 1.379-1.564 2.838-1.564 3.037 0 3.6 2 3.6 4.59v4.742z"/>
       </svg>
     )
@@ -251,13 +343,13 @@ const socials = [
     label: "GitHub",
     url: "https://github.com/Shrinidhi972004",
     icon: (
-      <svg width="22" height="22" fill="#2563eb" viewBox="0 0 24 24">
+      <svg width="22" height="22" fill={isDark ? "#2563eb" : "#3b82f6"} viewBox="0 0 24 24">
         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.6.113.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.236 1.839 1.236 1.07 1.834 2.809 1.304 3.495.997.108-.775.419-1.305.762-1.605-2.665-.305-5.467-1.332-5.467-5.931 0-1.31.469-2.381 1.236-3.221-.124-.303-.535-1.527.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.553 3.297-1.23 3.297-1.23.653 1.649.242 2.873.119 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
       </svg>
     )
   },
   {
-    label: "Instagram",
+    label: "Instagram", 
     url: "https://www.instagram.com/Sh_ri_ni_dhi/",
     icon: (
       <svg width="22" height="22" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -276,19 +368,22 @@ const socials = [
         </defs>
         <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#instagram-gradient)"/>
         <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#purple-overlay)"/>
-        <rect x="50" y="50" width="100" height="100" rx="20" ry="20" fill="none" stroke="white" strokeWidth="6"/>
-        <circle cx="100" cy="100" r="25" fill="none" stroke="white" strokeWidth="6"/>
-        <circle cx="130" cy="70" r="6" fill="white"/>
+        <rect x="50" y="50" width="100" height="100" rx="20" ry="20" fill="none" stroke={isDark ? "#ffffff" : "#f8fafc"} strokeWidth="6"/>
+        <circle cx="100" cy="100" r="25" fill="none" stroke={isDark ? "#ffffff" : "#f8fafc"} strokeWidth="6"/>
+        <circle cx="130" cy="70" r="6" fill={isDark ? "#ffffff" : "#f8fafc"}/>
       </svg>
     )
   }
 ];
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 export default function Contact() {
+  const { isDark } = useTheme();
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
+  
+  const socials = getSocialIcons(isDark);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -315,8 +410,9 @@ export default function Contact() {
   }
 
   return (
-    <ContactSection id="contact">
+    <ContactSection id="contact" isDark={isDark}>
       <AnimatedBlob
+        isDark={isDark}
         animate={{
           scale: [1, 1.09, 1],
           y: [0, 18, 0],
@@ -331,13 +427,14 @@ export default function Contact() {
         }}
       />
       <SpreadRow>
-        <LeftInfo>
-          <ContactHeading>Contact Information</ContactHeading>
-          <ContactBlurb>
+        <LeftInfo isDark={isDark}>
+          <ContactHeading isDark={isDark}>Contact Information</ContactHeading>
+          <ContactBlurb isDark={isDark}>
             Feel free to reach out if you're looking for a developer, have a question, or just want to connect.
           </ContactBlurb>
           <ContactDetail>
             <ContactIcon
+              isDark={isDark}
               as="a"
               href="https://www.google.com/maps/place/Mangalore,+Karnataka"
               target="_blank"
@@ -345,38 +442,40 @@ export default function Contact() {
               title="View on Google Maps"
               style={{ display: "flex" }}
             >
-              {LocationIcon}
+              <LocationIcon isDark={isDark} />
             </ContactIcon>
             <DetailBody>
-              <DetailLabel>Location</DetailLabel>
-              <DetailValue>Mangalore, Karnataka, India</DetailValue>
+              <DetailLabel isDark={isDark}>Location</DetailLabel>
+              <DetailValue isDark={isDark}>Mangalore, Karnataka, India</DetailValue>
             </DetailBody>
           </ContactDetail>
           <ContactDetail>
             <ContactIcon
+              isDark={isDark}
               as="a"
               href="mailto:shrinidhiupadhyaya00@gmail.com"
               title="Send Email"
               style={{ display: "flex" }}
             >
-              {EmailIcon}
+              <EmailIcon isDark={isDark} />
             </ContactIcon>
             <DetailBody>
-              <DetailLabel>Email</DetailLabel>
-              <DetailValue>shrinidhiupadhyaya00@gmail.com</DetailValue>
+              <DetailLabel isDark={isDark}>Email</DetailLabel>
+              <DetailValue isDark={isDark}>shrinidhiupadhyaya00@gmail.com</DetailValue>
             </DetailBody>
           </ContactDetail>
           <ContactDetail>
-            <ContactIcon>{PhoneIcon}</ContactIcon>
+            <ContactIcon isDark={isDark}><PhoneIcon isDark={isDark} /></ContactIcon>
             <DetailBody>
-              <DetailLabel>Phone</DetailLabel>
-              <DetailValue>+91 7204200386</DetailValue>
+              <DetailLabel isDark={isDark}>Phone</DetailLabel>
+              <DetailValue isDark={isDark}>+91 7204200386</DetailValue>
             </DetailBody>
           </ContactDetail>
           <ContactSocials>
             {socials.map((social, idx) => (
               <SocialBtn
                 key={idx}
+                isDark={isDark}
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -388,11 +487,12 @@ export default function Contact() {
           </ContactSocials>
         </LeftInfo>
 
-        <RightForm>
-          <RightHeading>Get In Touch</RightHeading>
+        <RightForm isDark={isDark}>
+          <RightHeading isDark={isDark}>Get In Touch</RightHeading>
           <ContactForm onSubmit={handleSubmit}>
             <Row>
               <Input
+                isDark={isDark}
                 type="text"
                 name="name"
                 placeholder="Name"
@@ -401,6 +501,7 @@ export default function Contact() {
                 required
               />
               <Input
+                isDark={isDark}
                 type="email"
                 name="email"
                 placeholder="Email"
@@ -410,6 +511,7 @@ export default function Contact() {
               />
             </Row>
             <Input
+              isDark={isDark}
               type="text"
               name="subject"
               placeholder="Subject"
@@ -418,13 +520,14 @@ export default function Contact() {
               required
             />
             <Textarea
+              isDark={isDark}
               name="message"
               placeholder="Message"
               value={form.message}
               onChange={handleChange}
               required
             />
-            <SubmitBtn type="submit" disabled={loading}>
+            <SubmitBtn type="submit" disabled={loading} isDark={isDark}>
               {SendIcon} {loading ? "Sending..." : "Send Message"}
             </SubmitBtn>
           </ContactForm>

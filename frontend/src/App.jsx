@@ -1,34 +1,63 @@
 import { useState } from "react";
+import { DarkThemeProvider } from "./contexts/DarkThemeContext";
+import CustomCursor from "./components/CustomCursor";
+import LoadingScreen from "./components/LoadingScreen";
+import ScrollToTop from "./components/ScrollToTop";
+import ScrollProgress from "./components/ScrollProgress";
+import ParticleBackground from "./components/ParticleBackground";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
 import Projects from "./components/Projects";
 import Contact from "./components/Contact";
-
-// Optionally, add GlobalStyle here if using styled-components for scroll-padding
-// import GlobalStyle from "./components/GlobalStyle";
+import SectionSeparator from "./components/SectionSeparator";
+import { FiUser, FiCode, FiMail } from 'react-icons/fi';
 
 export default function App() {
   const [activeSection, setActiveSection] = useState("home");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return (
+      <DarkThemeProvider>
+        <LoadingScreen onComplete={handleLoadingComplete} />
+      </DarkThemeProvider>
+    );
+  }
 
   return (
-    <>
-      {/* <GlobalStyle /> */}
+    <DarkThemeProvider>
+      <CustomCursor />
+      <ScrollProgress />
+      <ParticleBackground particleCount={30} />
+      <ScrollToTop />
       <Navbar activeSection={activeSection} setActiveSection={setActiveSection} />
       
-      {/* Wrap each section in a <section> with a unique id */}
       <section id="home">
-        <Hero setActiveSection={setActiveSection} />
-      </section>
-      <section id="about">
-        <About />
-      </section>
-      <section id="projects">
-        <Projects />
-      </section>
-      <section id="contact">
-        <Contact />
-      </section>
-    </>
+          <Hero setActiveSection={setActiveSection} />
+        </section>
+        
+        <SectionSeparator icon={<FiUser />} />
+        
+        <section id="about">
+          <About />
+        </section>
+        
+        <SectionSeparator icon={<FiCode />} />
+        
+        <section id="projects">
+          <Projects />
+        </section>
+        
+        <SectionSeparator icon={<FiMail />} />
+        
+        <section id="contact">
+          <Contact />
+        </section>
+    </DarkThemeProvider>
   );
 }

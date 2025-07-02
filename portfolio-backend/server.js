@@ -8,7 +8,7 @@ const app = express();
 
 
 app.use(cors({
-  origin: "http://localhost:6969", // allow your frontend
+  origin: ["http://localhost:5173", "http://localhost:6969"], // allow both Vite dev server and production
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true, // if you ever need cookies or auth
 }));

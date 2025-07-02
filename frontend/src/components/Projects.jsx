@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../contexts/DarkThemeContext";
 import authImg from "../assets/auth.jpg";
 import galleryImg from "../assets/gallery.jpg";
 
@@ -13,7 +14,10 @@ const AnimatedBlob = styled(motion.div)`
   width: 410px;
   height: 410px;
   z-index: 0;
-  background: radial-gradient(circle at 25% 70%, #2563eb 0%, #1e40af 80%, #091a28 100%);
+  background: ${props => props.theme?.isDark 
+    ? 'radial-gradient(circle at 25% 70%, #2563eb 0%, #1e40af 80%, #091a28 100%)'
+    : 'radial-gradient(circle at 25% 70%, #3b82f6 0%, #2563eb 80%, #f8fafc 100%)'
+  };
   filter: blur(80px);
   opacity: 0.21;
   animation: blobMove 12s infinite alternate;
@@ -25,21 +29,23 @@ const AnimatedBlob = styled(motion.div)`
 
 const ProjectsSection = styled.section`
   min-height: 90vh;
-  background: #091a28;
+  background: ${props => props.theme?.colors?.background || '#091a28'};
   position: relative;
   padding: 6.2rem 0 4.5rem 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow: hidden;
+  transition: background 0.3s ease;
 `;
 
 const ProjectsTitle = styled.h2`
   font-size: 2.5rem;
   font-weight: 800;
-  color: #fff;
+  color: ${props => props.theme?.colors?.text || '#fff'};
   margin-bottom: 2.5rem;
   z-index: 2;
+  transition: color 0.3s ease;
 `;
 
 const ProjectsGrid = styled.div`
@@ -53,20 +59,41 @@ const ProjectsGrid = styled.div`
 `;
 
 const ProjectCard = styled(motion.div)`
-  background: rgba(16,42,67,0.86);
+  background: ${props => props.theme?.colors?.backgroundCard || 'rgba(16,42,67,0.86)'};
   border-radius: 1.5rem;
-  box-shadow: 0 2px 22px rgba(37,99,235,0.14);
+  box-shadow: 0 2px 22px ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.14)'};
   padding: 2.3rem 1.3rem 2.1rem 1.3rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  border: 2.2px solid #1e293b;
-  transition: transform 0.2s;
+  border: 2.2px solid ${props => props.theme?.colors?.border || '#1e293b'};
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: ${props => props.theme?.isDark 
+      ? 'linear-gradient(90deg, transparent, rgba(37,99,235,0.1), transparent)'
+      : 'linear-gradient(90deg, transparent, rgba(59,130,246,0.1), transparent)'
+    };
+    transition: left 0.5s;
+  }
+  
   &:hover {
-    transform: translateY(-10px) scale(1.045);
-    box-shadow: 0 8px 40px rgba(37,99,235,0.20);
-    border: 2.2px solid #2563eb;
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 20px 50px ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.25)'};
+    border: 2.2px solid ${props => props.theme?.colors?.primary || '#2563eb'};
+    
+    &::before {
+      left: 100%;
+    }
   }
 `;
 
@@ -84,14 +111,16 @@ const ProjectImage = styled.img`
 const ProjectTitle = styled.h3`
   font-size: 1.3rem;
   font-weight: 700;
-  color: #2563eb;
+  color: ${props => props.theme?.colors?.primary || '#2563eb'};
   margin-bottom: 0.8rem;
+  transition: color 0.3s ease;
 `;
 
 const ProjectDesc = styled.p`
-  color: #aac8f5;
+  color: ${props => props.theme?.colors?.textSecondary || '#aac8f5'};
   margin-bottom: 1.15rem;
   font-size: 1.01rem;
+  transition: color 0.3s ease;
 `;
 
 const ProjectLinks = styled.div`
@@ -104,26 +133,27 @@ const ProjectLinks = styled.div`
 const IconLink = styled.a`
   display: flex;
   align-items: center;
-  color: #b5cdf6;
+  color: ${props => props.theme?.colors?.textSecondary || '#b5cdf6'};
   font-weight: 600;
   text-decoration: none;
   gap: 0.4rem;
   font-size: 1.09rem;
   transition: color 0.17s;
   &:hover {
-    color: #2563eb;
+    color: ${props => props.theme?.colors?.primary || '#2563eb'};
   }
 `;
 
 const DetailsText = styled.div`
   margin-top: 0.9rem;
-  color: #7dd3fc;
+  color: ${props => props.theme?.colors?.textSecondary || '#7dd3fc'};
   font-size: 0.99rem;
   font-style: italic;
-  border-top: 1px dashed #1e90ff44;
+  border-top: 1px dashed ${props => props.theme?.colors?.primary || '#1e90ff'}44;
   padding-top: 0.7rem;
   width: 100%;
   text-align: left;
+  transition: color 0.3s ease;
 `;
 
 // Modal
@@ -259,10 +289,12 @@ const projects = [
 
 export default function Projects() {
   const [selected, setSelected] = useState(null);
+  const { currentTheme } = useTheme();
 
   return (
-    <ProjectsSection id="projects">
+    <ProjectsSection theme={currentTheme} id="projects">
       <AnimatedBlob
+        theme={currentTheme}
         animate={{
           scale: [1, 1.09, 1],
           y: [0, 28, 0],
@@ -276,24 +308,36 @@ export default function Projects() {
           ease: "easeInOut",
         }}
       />
-      <ProjectsTitle>Projects</ProjectsTitle>
+      <ProjectsTitle theme={currentTheme}>Projects</ProjectsTitle>
       <ProjectsGrid>
         {projects.map((project, idx) => (
           <ProjectCard
             key={idx}
-            whileHover={{ scale: 1.045 }}
-            transition={{ type: "spring", stiffness: 210 }}
+            theme={currentTheme}
+            initial={{ opacity: 0, y: 60, scale: 0.9 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ 
+              duration: 0.6, 
+              delay: idx * 0.15,
+              ease: [0.25, 0.46, 0.45, 0.94]
+            }}
+            whileHover={{ 
+              scale: 1.05,
+              rotate: [0, 1, -1, 0],
+              transition: { duration: 0.3 }
+            }}
             onClick={() => setSelected(project)}
           >
             {project.img && <ProjectImage src={project.img} alt={project.title + " logo"} />}
-            <ProjectTitle>{project.title}</ProjectTitle>
-            <ProjectDesc>{project.desc}</ProjectDesc>
+            <ProjectTitle theme={currentTheme}>{project.title}</ProjectTitle>
+            <ProjectDesc theme={currentTheme}>{project.desc}</ProjectDesc>
             <ProjectLinks>
-              <IconLink href={project.github} target="_blank" rel="noopener noreferrer">
+              <IconLink theme={currentTheme} href={project.github} target="_blank" rel="noopener noreferrer">
                 <GithubIcon />
                 GitHub
               </IconLink>
-              <IconLink href={project.demo} target="_blank" rel="noopener noreferrer">
+              <IconLink theme={currentTheme} href={project.demo} target="_blank" rel="noopener noreferrer">
                 <LiveDemoIcon />
                 Live Demo
               </IconLink>
