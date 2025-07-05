@@ -65,10 +65,11 @@ export default function CustomCursor() {
       cursorY.set(e.clientY - 4);
       setIsVisible(true);
 
-      // Add trail effect with unique key
-      const uniqueId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      // Add trail effect
+      setTrailCounter(prev => prev + 1);
+      const trailId = Date.now() + Math.random(); // Ensure uniqueness
       setTrails(prev => [
-        { x: e.clientX - 2, y: e.clientY - 2, id: uniqueId },
+        { x: e.clientX - 2, y: e.clientY - 2, id: trailId, timestamp: Date.now() },
         ...prev.slice(0, 8)
       ]);
     };
@@ -100,10 +101,7 @@ export default function CustomCursor() {
   // Remove old trails
   useEffect(() => {
     const interval = setInterval(() => {
-      setTrails(prev => prev.filter(trail => {
-        const timestamp = parseInt(trail.id.split('-')[0]);
-        return Date.now() - timestamp < 500;
-      }));
+      setTrails(prev => prev.filter(trail => Date.now() - trail.timestamp < 500));
     }, 50);
 
     return () => clearInterval(interval);

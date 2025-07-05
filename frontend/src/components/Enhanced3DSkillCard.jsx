@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { shouldForwardProp } from '../utils/propFilter';
 
-const TiltCard = styled(motion.div)`
+const TiltCard = styled(motion.div).withConfig({
+  shouldForwardProp,
+})`
   background: rgba(16,42,67,0.92);
   border-radius: 1.25rem;
   box-shadow: 0 2px 14px #2563eb18;

@@ -1,13 +1,19 @@
 import styled from "styled-components";
-import { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../contexts/DarkThemeContext";
-import authImg from "../assets/auth.jpg";
+import hostelImg from "../assets/hostel.jpg";
 import galleryImg from "../assets/gallery.jpg";
+import passwordImg from "../assets/password.jpg";
+import rootsTechImg from "../assets/RootsTech.jpg";
+import portfolioImg from "../assets/portfolio.jpg";
+import { shouldForwardProp } from '../utils/propFilter';
 
 
 // Animated blue blob
-const AnimatedBlob = styled(motion.div)`
+const AnimatedBlob = styled(motion.div).withConfig({
+  shouldForwardProp,
+})`
   position: absolute;
   left: -100px;
   bottom: -100px;
@@ -48,17 +54,26 @@ const ProjectsTitle = styled.h2`
   transition: color 0.3s ease;
 `;
 
-const ProjectsGrid = styled.div`
-  display: grid;
-  gap: 2.2rem;
-  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+const CarouselContainer = styled.div`
   width: 100%;
-  max-width: 1040px;
+  max-width: 1200px;
   position: relative;
   z-index: 2;
+  overflow: hidden;
 `;
 
-const ProjectCard = styled(motion.div)`
+const CarouselTrack = styled(motion.div)`
+  display: flex;
+  gap: 2rem;
+  padding: 0 1rem;
+  width: fit-content;
+  user-select: none;
+  touch-action: pan-y pinch-zoom;
+`;
+
+const ProjectCard = styled(motion.div).withConfig({
+  shouldForwardProp,
+})`
   background: ${props => props.theme?.colors?.backgroundCard || 'rgba(16,42,67,0.86)'};
   border-radius: 1.5rem;
   box-shadow: 0 2px 22px ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.14)'};
@@ -67,10 +82,15 @@ const ProjectCard = styled(motion.div)`
   flex-direction: column;
   align-items: flex-start;
   border: 2.2px solid ${props => props.theme?.colors?.border || '#1e293b'};
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  width: 550px;
+  height: 700px;
+  flex-shrink: 0;
   
   &::before {
     content: '';
@@ -86,26 +106,79 @@ const ProjectCard = styled(motion.div)`
     transition: left 0.5s;
   }
   
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${props => props.theme?.colors?.primary || '#2563eb'}08;
+    border-radius: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
   &:hover {
-    transform: translateY(-12px) scale(1.02);
-    box-shadow: 0 20px 50px ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.25)'};
+    transform: translateY(-12px) scale(1.02) rotateX(2deg) rotateY(2deg);
+    box-shadow: 
+      0 20px 50px ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.25)'},
+      0 0 30px ${props => props.theme?.colors?.primary || '#2563eb'}20;
     border: 2.2px solid ${props => props.theme?.colors?.primary || '#2563eb'};
     
     &::before {
       left: 100%;
     }
+    
+    &::after {
+      opacity: 1;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    width: 350px;
+    height: 550px;
+  }
+  
+  @media (max-width: 480px) {
+    width: 300px;
+    height: 500px;
   }
 `;
 
-const ProjectImage = styled.img`
-  width: 300px;
-  height: 300px;
+const ImageWrapper = styled.div`
+  width: 450px;
+  height: 350px;
   margin-bottom: 2rem;
   border-radius: 1.3rem;
-  object-fit: cover;
+  overflow: hidden;
   box-shadow: 0 4px 16px rgba(37,99,235,0.12);
   background: #1e293b;
   align-self: center;
+  flex-shrink: 0;
+  
+  @media (max-width: 768px) {
+    width: 320px;
+    height: 320px;
+  }
+  
+  @media (max-width: 480px) {
+    width: 280px;
+    height: 280px;
+  }
+`;
+
+const ProjectImage = styled(motion.img)`
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const ProjectTitle = styled.h3`
@@ -121,6 +194,8 @@ const ProjectDesc = styled.p`
   margin-bottom: 1.15rem;
   font-size: 1.01rem;
   transition: color 0.3s ease;
+  line-height: 1.5;
+  flex-grow: 1;
 `;
 
 const ProjectLinks = styled.div`
@@ -130,7 +205,7 @@ const ProjectLinks = styled.div`
   margin-bottom: 1.3rem;
 `;
 
-const IconLink = styled.a`
+const IconLink = styled(motion.a)`
   display: flex;
   align-items: center;
   color: ${props => props.theme?.colors?.textSecondary || '#b5cdf6'};
@@ -138,14 +213,35 @@ const IconLink = styled.a`
   text-decoration: none;
   gap: 0.4rem;
   font-size: 1.09rem;
-  transition: color 0.17s;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: ${props => props.theme?.colors?.primary || '#2563eb'}15;
+    transition: left 0.3s ease;
+  }
+  
   &:hover {
     color: ${props => props.theme?.colors?.primary || '#2563eb'};
+    transform: translateY(-2px);
+    
+    &::before {
+      left: 0;
+    }
   }
 `;
 
 const DetailsText = styled.div`
-  margin-top: 0.9rem;
+  margin-top: auto;
   color: ${props => props.theme?.colors?.textSecondary || '#7dd3fc'};
   font-size: 0.99rem;
   font-style: italic;
@@ -157,62 +253,98 @@ const DetailsText = styled.div`
 `;
 
 // Modal
-const ModalOverlay = styled(motion.div)`
+const ModalOverlay = styled(motion.div).withConfig({
+  shouldForwardProp,
+})`
   position: fixed;
   z-index: 1200;
   inset: 0;
-  background: rgba(13, 23, 48, 0.68);
+  background: rgba(9, 26, 40, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
 `;
 
-const ModalCard = styled(motion.div)`
-  background: rgba(20, 32, 66, 0.98);
+const ModalCard = styled(motion.div).withConfig({
+  shouldForwardProp,
+})`
+  background: rgba(16, 42, 67, 0.95);
   border-radius: 2.1rem;
-  box-shadow: 0 8px 48px #2563eb27;
-  padding: 2.4rem 2.2rem 2rem 2.2rem;
-  min-width: 330px;
-  max-width: 98vw;
-  width: 410px;
+  box-shadow: 
+    0 20px 60px rgba(37, 99, 235, 0.3),
+    0 0 40px rgba(37, 99, 235, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 3rem 2.5rem 2.5rem 2.5rem;
+  min-width: 500px;
+  max-width: 95vw;
+  width: 700px;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2.5px solid #2563eb;
+  border: 2px solid rgba(37, 99, 235, 0.3);
   position: relative;
   z-index: 1300;
+  backdrop-filter: blur(12px);
+  overflow-y: auto;
+  
+  @media (max-width: 768px) {
+    width: 95vw;
+    min-width: 300px;
+    padding: 2rem 1.5rem 1.5rem 1.5rem;
+  }
 `;
 
 const ModalImg = styled.img`
-  width: 320px;
-  height: 320px;
+  width: 500px;
+  height: 400px;
   border-radius: 1.5rem;
   object-fit: cover;
   background: #f1f5f9;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 8px 32px rgba(37,99,235,0.13);
+  margin-bottom: 2rem;
+  box-shadow: 
+    0 12px 40px rgba(37,99,235,0.2),
+    0 0 20px rgba(37,99,235,0.1);
+  border: 2px solid rgba(37, 99, 235, 0.1);
+  transition: all 0.3s ease;
 
-  @media (max-width: 600px) {
-    width: 180px;
-    height: 180px;
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 250px;
+  }
+  
+  @media (max-width: 480px) {
+    height: 200px;
   }
 `;
 
 
 const ModalTitle = styled.h3`
-  font-size: 1.45rem;
+  font-size: 2rem;
   font-weight: 700;
   color: #1e90ff;
-  margin-bottom: 0.6rem;
+  margin-bottom: 1rem;
   text-align: center;
+  
+  @media (max-width: 768px) {
+    font-size: 1.6rem;
+  }
 `;
 
 const ModalDesc = styled.p`
-  font-size: 1.07rem;
+  font-size: 1.2rem;
   color: #b5cdf6;
-  margin-bottom: 1.4rem;
+  margin-bottom: 2rem;
   text-align: center;
   white-space: pre-line;
+  line-height: 1.6;
+  
+  @media (max-width: 768px) {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const ModalLinks = styled.div`
@@ -224,23 +356,105 @@ const ModalLinks = styled.div`
 
 const ModalDetail = styled.div`
   color: #60a5fa;
-  font-size: 0.98rem;
+  font-size: 1.1rem;
   font-style: italic;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.5rem;
   text-align: center;
+  line-height: 1.5;
+  
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const CloseBtn = styled.button`
   position: absolute;
   right: 1.25rem;
   top: 1rem;
-  background: none;
-  border: none;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #b5cdf6;
-  font-size: 2.1rem;
+  font-size: 1.5rem;
   cursor: pointer;
-  transition: color 0.14s;
-  &:hover { color: #2563eb; }
+  transition: all 0.3s ease;
+  
+  &:hover { 
+    color: #2563eb; 
+    background: rgba(37, 99, 235, 0.2);
+    border-color: rgba(37, 99, 235, 0.4);
+    transform: scale(1.1);
+  }
+`;
+
+const NavigationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  z-index: 3;
+`;
+
+const NavButton = styled(motion.button)`
+  background: ${props => props.theme?.colors?.primary || '#2563eb'};
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(37,99,235,0.3);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: ${props => props.theme?.colors?.primaryHover || '#1d4ed8'};
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+  }
+  
+  &:disabled {
+    background: ${props => props.theme?.colors?.textSecondary || '#64748b'};
+    cursor: not-allowed;
+    transform: scale(1);
+    box-shadow: none;
+  }
+`;
+
+
+
+const DotsContainer = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 1rem;
+`;
+
+const Dot = styled(motion.button)`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: ${props => props.active 
+    ? props.theme?.colors?.primary || '#2563eb'
+    : props.theme?.colors?.textSecondary || '#64748b'
+  };
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: ${props => props.theme?.colors?.primary || '#2563eb'};
+    transform: scale(1.2);
+  }
 `;
 
 // Icons
@@ -269,27 +483,87 @@ function LiveDemoIcon() {
 const projects = [
   {
     title: "Passwordless Auth System",
-    desc: "Secure authentication using magic links for frictionless login.",
+    desc: "Secure authentication using magic links.",
     longDesc: "This project implements passwordless authentication using secure magic links sent to the user’s email. Features include JWT-based validation, user management, rate-limiting, and a user-friendly UI built with React and Node.js. Fully open-source and ready for production environments.",
     github: "https://github.com/Shrinidhi972004/passwordless-password-authentication-system.git",
     demo: "https://passwordless-password-authentication.onrender.com",
     details: "A secure, production-ready authentication flow using magic links (email).",
-    img: authImg
+    img: passwordImg
   },
   {
     title: "Cloud Gallery",
-    desc: "A cloud-based gallery for secure photo and video management.",
+    desc: "Cloud-based gallery for photo management.",
     longDesc: "A full-stack gallery app to upload, organize, and securely store photos/videos. AWS S3 integration, user authentication, responsive React UI, and Node.js backend. Great for photographers, teams, or anyone needing cloud media storage.",
     github: "https://github.com/Shrinidhi972004/Shrinidhi972004-cloud-media-gallery-using-mern-stack-and-aws-s3.git",
     demo: "https://cloud-gallery-demo.vercel.app/",
     details: "Upload and organize media securely, with AWS S3 integration and user authentication.",
     img: galleryImg
+  },
+  {
+    title: "Hostel Room Booking System",
+    desc: "Hostel room booking system.",
+    longDesc: "A full-stack hostel room booking system for students. It is a web application that allows students to book rooms in a hostel. It is a web application that allows students to book rooms in a hostel.",
+    github: "https://github.com/Shrinidhi972004/hostel-room-booking.git/",
+    demo: "https://hostel-room-booking-system-demo.vercel.app/",
+    details: "A full-stack hostel room booking system for students. It is a web application that allows students to book rooms in a hostel.",
+    img: hostelImg
+  },
+  {
+    title: "Roots-Tech",
+    desc: "Ecommerce website for products.",
+    longDesc: "A full-stack ecommerce website for selling products. It is a web application that allows users to buy and sell products. It is a web application that allows users to buy and sell products.",
+    github: "https://github.com/Shrinidhi972004/Roots-Tech.git/",
+    demo: "https://roots-tech.vercel.app/",
+    details: "A full-stack ecommerce website for selling products. It is a web application that allows users to buy and sell products.",
+    img: rootsTechImg
+  },
+  {
+    title: "Personal Portfolio",
+    desc: "A modern, responsive developer portfolio.",
+    longDesc: "Portfolio site to showcase my projects, skills, and experience. Built with React and styled-components.",
+    github: "https://github.com/Shrinidhi972004/myportfolio",
+    demo: "https://shrinidhi-portfolio.vercel.app/",
+    details: "A visually appealing and responsive portfolio website built with React and styled-components. Features include About, Skills, Projects, and Contact sections, as well as interactive UI elements and smooth animations. The site allows visitors to learn more about my background, explore my work, and connect easily.",
+    img: portfolioImg
   }
+  
+
 ];
 
 export default function Projects() {
   const [selected, setSelected] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const { currentTheme } = useTheme();
+  const carouselRef = useRef(null);
+
+  const handlePrevious = () => {
+    setCurrentIndex(prev => Math.max(0, prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex(prev => Math.min(projects.length - 1, prev + 1));
+  };
+
+  const handleDotClick = (index) => {
+    setCurrentIndex(index);
+  };
+
+  // Touch/Swipe functionality
+  const handleDragEnd = (event, info) => {
+    const swipeThreshold = 50; // Minimum distance to trigger swipe
+    const velocityThreshold = 500; // Minimum velocity to trigger swipe
+
+    if (info.offset.x > swipeThreshold || info.velocity.x > velocityThreshold) {
+      // Swipe right - go to previous
+      handlePrevious();
+    } else if (info.offset.x < -swipeThreshold || info.velocity.x < -velocityThreshold) {
+      // Swipe left - go to next
+      handleNext();
+    }
+  };
+
+  const cardWidth = 470; // Width of each card including gap
+  const translateX = -currentIndex * cardWidth;
 
   return (
     <ProjectsSection theme={currentTheme} id="projects">
@@ -308,47 +582,170 @@ export default function Projects() {
           ease: "easeInOut",
         }}
       />
-      <ProjectsTitle theme={currentTheme}>Projects</ProjectsTitle>
-      <ProjectsGrid>
-        {projects.map((project, idx) => (
-          <ProjectCard
-            key={idx}
-            theme={currentTheme}
-            initial={{ opacity: 0, y: 60, scale: 0.9 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ 
-              duration: 0.6, 
-              delay: idx * 0.15,
-              ease: [0.25, 0.46, 0.45, 0.94]
-            }}
-            whileHover={{ 
-              scale: 1.05,
-              rotate: [0, 1, -1, 0],
-              transition: { duration: 0.3 }
-            }}
-            onClick={() => setSelected(project)}
-          >
-            {project.img && <ProjectImage src={project.img} alt={project.title + " logo"} />}
-            <ProjectTitle theme={currentTheme}>{project.title}</ProjectTitle>
-            <ProjectDesc theme={currentTheme}>{project.desc}</ProjectDesc>
-            <ProjectLinks>
-              <IconLink theme={currentTheme} href={project.github} target="_blank" rel="noopener noreferrer">
-                <GithubIcon />
-                GitHub
-              </IconLink>
-              <IconLink theme={currentTheme} href={project.demo} target="_blank" rel="noopener noreferrer">
-                <LiveDemoIcon />
-                Live Demo
-              </IconLink>
-            </ProjectLinks>
-            <DetailsText>
-              {project.details}<br/>
-              <b>Click to see full details.</b>
-            </DetailsText>
-          </ProjectCard>
-        ))}
-      </ProjectsGrid>
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        viewport={{ once: true }}
+      >
+        <ProjectsTitle theme={currentTheme}>Projects</ProjectsTitle>
+      </motion.div>
+      <CarouselContainer>
+        <CarouselTrack
+          ref={carouselRef}
+          animate={{ x: translateX }}
+          transition={{
+            duration: 0.6,
+            ease: [0.25, 0.46, 0.45, 0.94]
+          }}
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.1}
+          onDragEnd={handleDragEnd}
+          style={{ cursor: "grab" }}
+          whileDrag={{ cursor: "grabbing" }}
+        >
+          {projects.map((project, idx) => (
+            <ProjectCard
+              key={idx}
+              theme={currentTheme}
+              initial={{ opacity: 0, y: 80, scale: 0.85, rotateX: 15 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ 
+                duration: 0.8, 
+                delay: idx * 0.1,
+                ease: [0.25, 0.46, 0.45, 0.94]
+              }}
+              whileHover={{ 
+                scale: 1.03,
+                rotateY: [0, 2, -2, 0],
+                transition: { duration: 0.4 }
+              }}
+              onClick={() => setSelected(project)}
+            >
+              {project.img && (
+                <ImageWrapper>
+                  <ProjectImage 
+                    src={project.img} 
+                    alt={project.title + " logo"}
+                    whileHover={{ 
+                      scale: 1.05,
+                      transition: { duration: 0.3 }
+                  }}
+                  />
+                </ImageWrapper>
+              )}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + idx * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <ProjectTitle theme={currentTheme}>{project.title}</ProjectTitle>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + idx * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <ProjectDesc theme={currentTheme}>{project.desc}</ProjectDesc>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 + idx * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <ProjectLinks>
+                  <IconLink 
+                    theme={currentTheme} 
+                    href={project.github} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <GithubIcon />
+                    GitHub
+                  </IconLink>
+                  <IconLink 
+                    theme={currentTheme} 
+                    href={project.demo} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <LiveDemoIcon />
+                    Live Demo
+                  </IconLink>
+                </ProjectLinks>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ delay: 0.6 + idx * 0.1, duration: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <DetailsText>
+                  {project.details}<br/>
+                  <b>Click to see full details.</b>
+                </DetailsText>
+              </motion.div>
+            </ProjectCard>
+          ))}
+        </CarouselTrack>
+      </CarouselContainer>
+
+      <NavigationContainer>
+        <NavButton
+          theme={currentTheme}
+          onClick={handlePrevious}
+          disabled={currentIndex === 0}
+          whileHover={{ scale: currentIndex === 0 ? 1 : 1.1 }}
+          whileTap={{ scale: currentIndex === 0 ? 1 : 0.95 }}
+        >
+          &lt;
+        </NavButton>
+        <DotsContainer>
+          {projects.map((_, idx) => (
+            <Dot
+              key={idx}
+              theme={currentTheme}
+              active={idx === currentIndex}
+              onClick={() => handleDotClick(idx)}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
+            />
+          ))}
+        </DotsContainer>
+        <NavButton
+          theme={currentTheme}
+          onClick={handleNext}
+          disabled={currentIndex === projects.length - 1}
+          whileHover={{ scale: currentIndex === projects.length - 1 ? 1 : 1.1 }}
+          whileTap={{ scale: currentIndex === projects.length - 1 ? 1 : 0.95 }}
+        >
+          &gt;
+        </NavButton>
+      </NavigationContainer>
+      
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 0.5 }}
+        style={{
+          textAlign: 'center',
+          marginTop: '1rem',
+          color: currentTheme?.colors?.textSecondary || '#aac8f5',
+          fontSize: '0.9rem',
+          fontStyle: 'italic'
+        }}
+      >
+        
+      </motion.div>
 
       <AnimatePresence>
         {selected && (
@@ -356,28 +753,105 @@ export default function Projects() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
             onClick={() => setSelected(null)}
           >
             <ModalCard
-              initial={{ scale: 0.91, opacity: 0, y: 60 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.96, opacity: 0, y: 60 }}
-              transition={{ duration: 0.24, type: "spring" }}
+              initial={{ 
+                scale: 0.8, 
+                opacity: 0, 
+                y: 80,
+                rotateX: 15,
+                rotateY: -5
+              }}
+              animate={{ 
+                scale: 1, 
+                opacity: 1, 
+                y: 0,
+                rotateX: 0,
+                rotateY: 0
+              }}
+              exit={{ 
+                scale: 0.9, 
+                opacity: 0, 
+                y: 40,
+                rotateX: -10,
+                rotateY: 5
+              }}
+              transition={{ 
+                duration: 0.4, 
+                type: "spring",
+                stiffness: 300,
+                damping: 25
+              }}
               onClick={e => e.stopPropagation()} // Prevent closing when clicking inside
             >
-              <CloseBtn onClick={() => setSelected(null)} title="Close">&times;</CloseBtn>
-              <ModalImg src={selected.img} alt={selected.title + " logo"} />
-              <ModalTitle>{selected.title}</ModalTitle>
-              <ModalDesc>{selected.longDesc}</ModalDesc>
-              <ModalLinks>
-                <IconLink href={selected.github} target="_blank" rel="noopener noreferrer">
-                  <GithubIcon /> GitHub
-                </IconLink>
-                <IconLink href={selected.demo} target="_blank" rel="noopener noreferrer">
-                  <LiveDemoIcon /> Live Demo
-                </IconLink>
-              </ModalLinks>
-              <ModalDetail>{selected.details}</ModalDetail>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.3 }}
+              >
+                <CloseBtn onClick={() => setSelected(null)} title="Close">&times;</CloseBtn>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.1, duration: 0.4, ease: "easeOut" }}
+              >
+                <ModalImg src={selected.img} alt={selected.title + " logo"} />
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
+              >
+                <ModalTitle>{selected.title}</ModalTitle>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
+              >
+                <ModalDesc>{selected.longDesc}</ModalDesc>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.4, ease: "easeOut" }}
+              >
+                <ModalLinks>
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <IconLink href={selected.github} target="_blank" rel="noopener noreferrer">
+                      <GithubIcon /> GitHub
+                    </IconLink>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <IconLink href={selected.demo} target="_blank" rel="noopener noreferrer">
+                      <LiveDemoIcon /> Live Demo
+                    </IconLink>
+                  </motion.div>
+                </ModalLinks>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.4, ease: "easeOut" }}
+              >
+                <ModalDetail>{selected.details}</ModalDetail>
+              </motion.div>
             </ModalCard>
           </ModalOverlay>
         )}

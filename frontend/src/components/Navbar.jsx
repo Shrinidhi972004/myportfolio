@@ -23,10 +23,10 @@ const NavbarContainer = styled(motion.nav)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${props => props.theme?.colors?.backgroundNavbar || 'rgba(9,26,40,0.97)'};
-  box-shadow: 0 3px 24px 0 ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.10)'};
-  backdrop-filter: blur(18px) saturate(1.05);
-  border-bottom: 1.5px solid ${props => props.theme?.colors?.border || 'rgba(37,99,235,0.10)'};
+  background: ${props => props.theme?.colors?.backgroundNavbar || 'rgba(9,26,40,0.95)'};
+  box-shadow: 0 4px 32px 0 ${props => props.theme?.colors?.shadow || 'rgba(37,99,235,0.15)'};
+  backdrop-filter: blur(20px) saturate(1.1);
+  border-bottom: 1px solid ${props => props.theme?.colors?.border || 'rgba(37,99,235,0.15)'};
   transition: all 0.3s ease;
 `;
 
@@ -38,22 +38,44 @@ const NavContent = styled.div`
   justify-content: space-between;
 `;
 
-const Logo = styled.a`
-  font-size: 2rem;
-  font-weight: 900;
+const Logo = styled(motion.a)`
+  font-size: 1.8rem;
+  font-weight: 800;
   color: ${props => props.theme?.colors?.primary || '#1e90ff'};
   text-decoration: none;
-  letter-spacing: -0.02em;
-  margin-right: 2.7rem;
+  letter-spacing: -0.01em;
+  margin-right: 3rem;
   cursor: pointer;
-  transition: color 0.17s;
-  &:hover { color: ${props => props.theme?.colors?.primaryHover || '#2563eb'}; }
+  transition: all 0.3s ease;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, ${props => props.theme?.colors?.primary || '#1e90ff'}, ${props => props.theme?.colors?.primaryHover || '#2563eb'});
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  
+  &:hover { 
+    color: ${props => props.theme?.colors?.primaryHover || '#2563eb'};
+    transform: scale(1.02);
+    text-shadow: 0 0 20px ${props => props.theme?.colors?.primary || '#1e90ff'}40;
+    
+    &::after {
+      width: 100%;
+    }
+  }
 `;
 
 const NavLinks = styled.ul`
   display: flex;
   align-items: center;
-  gap: 2.6rem;
+  gap: 3rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -69,52 +91,85 @@ const NavItem = styled.li`
 
 const NavLink = styled(motion.a)`
   color: ${props => props.theme?.colors?.secondary || '#aac8f5'};
-  font-size: 1.13rem;
-  font-weight: 700;
+  font-size: 1.1rem;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  padding: 6px 2px;
-  border-radius: 8px;
-  transition: color 0.15s, background 0.16s;
+  padding: 10px 16px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.02em;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: ${props => props.theme?.colors?.primary || '#1e90ff'}10;
+    transition: left 0.4s ease;
+  }
+  
   &:hover {
     color: ${props => props.theme?.colors?.primary || '#1e90ff'};
-    background: ${props => props.theme?.colors?.backgroundSecondary || '#102a43'};
+    background: ${props => props.theme?.colors?.backgroundSecondary || '#102a43'}40;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px ${props => props.theme?.colors?.primary || '#1e90ff'}20;
+    
+    &::before {
+      left: 0;
+    }
+  }
+  
+  &:active {
+    transform: translateY(0);
   }
 `;
 
 const Underline = styled(motion.div)`
   position: absolute;
   left: 0; right: 0;
-  bottom: -3px;
+  bottom: -2px;
   height: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
   background: ${props => props.theme?.isDark 
-    ? 'linear-gradient(90deg,#2563eb 30%,#1e90ff 100%)'
-    : 'linear-gradient(90deg,#3b82f6 30%,#2563eb 100%)'
+    ? 'linear-gradient(90deg,#2563eb 0%,#1e90ff 50%,#2563eb 100%)'
+    : 'linear-gradient(90deg,#3b82f6 0%,#2563eb 50%,#3b82f6 100%)'
   };
+  box-shadow: 0 0 10px ${props => props.theme?.colors?.primary || '#1e90ff'}40;
 `;
 
 // Hamburger menu for mobile
 const Hamburger = styled.div`
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: ${props => props.theme?.colors?.backgroundSecondary || '#102a43'}40;
+  }
+  
   @media (max-width: 800px) {
     display: flex;
   }
 `;
 
 const Bar = styled.div`
-  width: 22px;
-  height: 3px;
+  width: 24px;
+  height: 2px;
   background: ${props => props.theme?.colors?.primary || '#2563eb'};
-  margin: 3px 0;
-  border-radius: 2px;
-  transition: all 0.18s;
+  margin: 2px 0;
+  border-radius: 1px;
+  transition: all 0.3s ease;
 `;
 
 const MobileMenu = styled(motion.div)`
@@ -140,13 +195,25 @@ function scrollToSectionWithOffset(hash, offset = NAVBAR_HEIGHT) {
     const rect = elem.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const targetY = rect.top + scrollTop - offset + 1;
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+    
+    // Use requestAnimationFrame for smoother scrolling
+    window.scrollTo({ 
+      top: targetY, 
+      behavior: "smooth" 
+    });
+  } else {
+    // Fallback: scroll to top if section not found
+    window.scrollTo({ 
+      top: 0, 
+      behavior: "smooth" 
+    });
   }
 }
 
 export default function Navbar() {
   const [active, setActive] = useState("Home");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isManualNavigation, setIsManualNavigation] = useState(false);
   const { currentTheme, isDark } = useTheme();
   const { scrollY } = useScroll();
   
@@ -159,20 +226,57 @@ export default function Navbar() {
     const sectionIds = navLinks.map(link => link.id);
 
     function onScroll() {
-      let found = false;
-      for (let i = sectionIds.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sectionIds[i]);
+      if (isManualNavigation) return; // Skip if we're manually navigating
+      
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // If we're at the bottom of the page, highlight Contact
+      if (scrollTop + windowHeight >= documentHeight - 10) {
+        setActive("Contact");
+        return;
+      }
+
+      // Find the section that's currently most visible
+      let activeSection = "Home";
+      let maxVisibility = 0;
+
+      for (const sectionId of sectionIds) {
+        const section = document.getElementById(sectionId);
         if (!section) continue;
+        
         const rect = section.getBoundingClientRect();
-        // Consider section active if it's in viewport's top half or top
-        if (rect.top <= NAVBAR_HEIGHT + 20 && rect.bottom > NAVBAR_HEIGHT + 20) {
-          setActive(navLinks[i].label);
-          found = true;
-          break;
+        const sectionTop = rect.top;
+        const sectionBottom = rect.bottom;
+        const sectionHeight = rect.height;
+        
+        // Calculate how much of the section is visible
+        const viewportTop = NAVBAR_HEIGHT;
+        const viewportBottom = windowHeight;
+        
+        const visibleTop = Math.max(sectionTop, viewportTop);
+        const visibleBottom = Math.min(sectionBottom, viewportBottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        
+        // Calculate visibility percentage
+        const visibility = visibleHeight / sectionHeight;
+        
+        // Special handling for Contact section - activate it when it starts coming into view
+        if (sectionId === 'contact' && sectionTop <= viewportTop + 100) {
+          setActive("Contact");
+          return;
+        }
+        
+        // For other sections, use the one with maximum visibility
+        if (visibility > maxVisibility && visibility > 0.3) {
+          maxVisibility = visibility;
+          const linkObj = navLinks.find(link => link.id === sectionId);
+          if (linkObj) activeSection = linkObj.label;
         }
       }
-      // Fallback: if at very top, always Home
-      if (!found && window.scrollY < 80) setActive("Home");
+      
+      setActive(activeSection);
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -186,9 +290,17 @@ export default function Navbar() {
   }, []);
 
   const handleNavClick = (label, to) => {
+    setIsManualNavigation(true);
     setActive(label);
-    scrollToSectionWithOffset(to);
     setMenuOpen(false);
+    
+    // Immediate scroll without delay
+    scrollToSectionWithOffset(to);
+    
+    // Reset manual navigation flag after scroll completes
+    setTimeout(() => {
+      setIsManualNavigation(false);
+    }, 1000);
   };
 
   return (
@@ -196,40 +308,57 @@ export default function Navbar() {
       <NavbarContainer
         theme={currentTheme}
         style={{
-          backdropFilter: useTransform(navbarBlur, latest => `blur(${latest}px) saturate(1.05)`),
+          backdropFilter: `blur(18px) saturate(1.05)`,
           background: isDark 
-            ? `rgba(9,26,40,${useTransform(navbarOpacity, latest => latest).get()})`
-            : `rgba(255,255,255,${useTransform(navbarOpacity, latest => latest).get()})`
+            ? 'rgba(9,26,40,0.97)'
+            : 'rgba(255,255,255,0.97)'
         }}
         initial={{ y: -60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
         <NavContent>
-          <Logo theme={currentTheme} href="#home" onClick={() => handleNavClick("Home", "#home")}>Shrinidhi</Logo>
+          <Logo 
+            theme={currentTheme} 
+            href="#home" 
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick("Home", "#home");
+            }}
+          >
+            Shrinidhi
+          </Logo>
           <NavLinks>
-            {navLinks.map(({ label, to }) => (
-              <NavItem key={label}>
-                <NavLink
-                  theme={currentTheme}
-                  onClick={e => {
-                    e.preventDefault();
-                    handleNavClick(label, to);
-                  }}
-                  whileTap={{ scale: 0.96 }}
-                  style={active === label ? { color: currentTheme.colors.primary } : {}}
-                >
-                  {label}
-                  {active === label && (
-                    <Underline
-                      theme={currentTheme}
-                      layoutId="nav-underline"
-                      initial={false}
-                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                </NavLink>
-              </NavItem>
+            {navLinks.map(({ label, to }, index) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
+              >
+                <NavItem>
+                  <NavLink
+                    theme={currentTheme}
+                    onClick={e => {
+                      e.preventDefault();
+                      handleNavClick(label, to);
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.96 }}
+                    style={active === label ? { color: currentTheme.colors.primary } : {}}
+                  >
+                    {label}
+                    {active === label && (
+                      <Underline
+                        theme={currentTheme}
+                        layoutId="nav-underline"
+                        initial={false}
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+                  </NavLink>
+                </NavItem>
+              </motion.div>
             ))}
           </NavLinks>
           <Hamburger onClick={() => setMenuOpen(!menuOpen)}>

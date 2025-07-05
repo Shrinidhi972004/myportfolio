@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useTheme } from "../contexts/DarkThemeContext";
 
 const TestimonialsSection = styled.section`
   width: 100vw;
@@ -18,7 +17,7 @@ const TestimonialsSection = styled.section`
 const Title = styled.h2`
   font-size: 2.5rem;
   font-weight: 800;
-  color: ${props => props.isDark ? '#fff' : '#1e293b'};
+  color: #fff;
   margin-bottom: 3rem;
   text-align: center;
 `;
@@ -69,7 +68,7 @@ const AuthorAvatar = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${props => props.isDark ? '#ffffff' : '#ffffff'};
+  color: white;
   font-weight: bold;
   font-size: 1.2rem;
 `;
@@ -79,7 +78,7 @@ const AuthorDetails = styled.div`
 `;
 
 const AuthorName = styled.h4`
-  color: ${props => props.isDark ? '#fff' : '#1e293b'};
+  color: #fff;
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
@@ -136,11 +135,10 @@ const testimonials = [
 
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { isDark } = useTheme();
 
   return (
     <TestimonialsSection>
-      <Title isDark={isDark}>What People Say</Title>
+      <Title>What People Say</Title>
       
       <TestimonialContainer>
         <TestimonialCard
@@ -154,11 +152,11 @@ export default function Testimonials() {
           </TestimonialText>
           
           <AuthorInfo>
-            <AuthorAvatar isDark={isDark}>
+            <AuthorAvatar>
               {testimonials[currentIndex].avatar}
             </AuthorAvatar>
             <AuthorDetails>
-              <AuthorName isDark={isDark}>{testimonials[currentIndex].author}</AuthorName>
+              <AuthorName>{testimonials[currentIndex].author}</AuthorName>
               <AuthorRole>{testimonials[currentIndex].role}</AuthorRole>
             </AuthorDetails>
           </AuthorInfo>

@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import { FaJava, FaReact, FaNodeJs, FaAws, FaLinux, FaDocker } from "react-icons/fa";
 import { SiMongodb, SiPostgresql, SiSpringboot, SiKubernetes } from "react-icons/si";
-import { useTheme } from "../contexts/DarkThemeContext";
 
 const SkillsContainer = styled.div`
   display: grid;
@@ -38,14 +37,14 @@ const SkillIcon = styled.div`
 `;
 
 const SkillName = styled.h4`
-  color: ${props => props.isDark ? '#fff' : '#1e293b'};
+  color: #fff;
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0;
 `;
 
 const SkillLevel = styled.span`
-  color: ${props => props.isDark ? '#b5cdf6' : '#64748b'};
+  color: #b5cdf6;
   font-size: 0.9rem;
   margin-left: auto;
 `;
@@ -78,8 +77,6 @@ const skills = [
 ];
 
 export default function EnhancedSkills() {
-  const { isDark } = useTheme();
-  
   return (
     <SkillsContainer>
       {skills.map((skill, idx) => (
@@ -95,8 +92,8 @@ export default function EnhancedSkills() {
             <SkillIcon>
               <skill.icon />
             </SkillIcon>
-            <SkillName isDark={isDark}>{skill.name}</SkillName>
-            <SkillLevel isDark={isDark}>{skill.level}%</SkillLevel>
+            <SkillName>{skill.name}</SkillName>
+            <SkillLevel>{skill.level}%</SkillLevel>
           </SkillHeader>
           
           <ProgressBarContainer>

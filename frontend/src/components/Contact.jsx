@@ -5,7 +5,7 @@ import { useTheme } from "../contexts/DarkThemeContext";
 
 // ---- Animated blue blob background ----
 const AnimatedBlob = styled(motion.div).withConfig({
-  shouldForwardProp: (prop) => !['animate', 'transition'].includes(prop),
+  shouldForwardProp: (prop) => !['animate', 'transition', 'isDark'].includes(prop),
 })`
   position: absolute;
   right: -100px;
@@ -13,7 +13,10 @@ const AnimatedBlob = styled(motion.div).withConfig({
   width: 410px;
   height: 410px;
   z-index: 0;
-  background: radial-gradient(circle at 80% 90%, #2563eb 0%, #1e40af 70%, #091a28 100%);
+  background: ${props => props.isDark
+    ? 'radial-gradient(circle at 80% 90%, #2563eb 0%, #1e40af 70%, #091a28 100%)'
+    : 'radial-gradient(circle at 80% 90%, #3b82f6 0%, #2563eb 70%, #e0f2fe 100%)'
+  };
   filter: blur(80px);
   opacity: 0.19;
   animation: blobMove 12s infinite alternate;
@@ -23,16 +26,19 @@ const AnimatedBlob = styled(motion.div).withConfig({
   }
 `;
 
-const ContactSection = styled.section`
+const ContactSection = styled.section.withConfig({
+  shouldForwardProp: (prop) => !['isDark'].includes(prop),
+})`
   width: 100vw;
   min-height: 90vh;
-  background: #091a28;
+  background: ${props => props.isDark ? '#091a28' : '#f8fafc'};
   padding: 7rem 0 5rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease;
 `;
 
 const SpreadRow = styled.div`
@@ -169,7 +175,7 @@ const SocialBtn = styled.a.withConfig({
   
   &:hover {
     background: ${props => props.isDark ? '#2563eb' : '#3b82f6'};
-    color: ${props => props.isDark ? '#fff' : '#fff'};
+    color: #fff;
     transform: translateY(-2px);
   }
 `;
@@ -224,20 +230,22 @@ const Row = styled.div`
   }
 `;
 
-const Input = styled.input.withConfig({
+const Input = styled(motion.input).withConfig({
   shouldForwardProp: (prop) => !['isDark'].includes(prop),
 })`
   flex: 1;
-  padding: 1.09rem;
+  padding: 1.4rem;
   border: ${props => props.isDark 
     ? '1px solid #2563eb33' 
     : '1px solid #cbd5e1'
   };
-  border-radius: 0.7rem;
-  font-size: 1.09rem;
+  border-radius: 0.8rem;
+  font-size: 1.15rem;
   background: ${props => props.isDark ? '#091a28' : '#ffffff'};
   color: ${props => props.isDark ? '#fff' : '#1e293b'};
   transition: all 0.3s ease;
+  position: relative;
+  width: 100%;
   
   &:focus {
     outline: none;
@@ -246,29 +254,37 @@ const Input = styled.input.withConfig({
       ? '0 0 0 3px rgba(37, 99, 235, 0.1)'
       : '0 0 0 3px rgba(59, 130, 246, 0.1)'
     };
+    transform: translateY(-2px);
   }
   
   &::placeholder {
     color: ${props => props.isDark ? '#64748b' : '#94a3b8'};
+    transition: all 0.3s ease;
+  }
+  
+  &:focus::placeholder {
+    opacity: 0.7;
+    transform: translateY(-5px);
   }
 `;
 
-const Textarea = styled.textarea.withConfig({
+const Textarea = styled(motion.textarea).withConfig({
   shouldForwardProp: (prop) => !['isDark'].includes(prop),
 })`
-  padding: 1.09rem;
+  padding: 1.4rem;
   border: ${props => props.isDark 
     ? '1px solid #2563eb33' 
     : '1px solid #cbd5e1'
   };
-  border-radius: 0.7rem;
-  font-size: 1.09rem;
+  border-radius: 0.8rem;
+  font-size: 1.15rem;
   background: ${props => props.isDark ? '#091a28' : '#ffffff'};
   color: ${props => props.isDark ? '#fff' : '#1e293b'};
-  min-height: 130px;
+  min-height: 180px;
   resize: vertical;
   transition: all 0.3s ease;
   font-family: inherit;
+  width: 100%;
   
   &:focus {
     outline: none;
@@ -277,31 +293,63 @@ const Textarea = styled.textarea.withConfig({
       ? '0 0 0 3px rgba(37, 99, 235, 0.1)'
       : '0 0 0 3px rgba(59, 130, 246, 0.1)'
     };
+    transform: translateY(-2px);
   }
   
   &::placeholder {
     color: ${props => props.isDark ? '#64748b' : '#94a3b8'};
+    transition: all 0.3s ease;
+  }
+  
+  &:focus::placeholder {
+    opacity: 0.7;
+    transform: translateY(-5px);
   }
 `;
 
-const SubmitBtn = styled.button.withConfig({
-  shouldForwardProp: (prop) => !['isDark'].includes(prop),
-})`
-  padding: 1.12rem;
+const SubmitBtn = styled(motion.button)`
+  padding: 1.4rem 2.5rem;
   background: linear-gradient(90deg, #2563eb 0%, #1e40af 100%);
-  color: ${props => props.isDark ? '#fff' : '#fff'};
+  color: #fff;
   border: none;
-  border-radius: 0.7rem;
-  font-size: 1.15rem;
+  border-radius: 1rem;
+  font-size: 1.25rem;
   font-weight: 700;
   cursor: pointer;
-  margin-top: 0.6rem;
+  margin-top: 1rem;
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.8rem;
   justify-content: center;
-  transition: background 0.18s;
-  &:hover { background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);}
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-width: 180px;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  &:hover { 
+    background: linear-gradient(90deg, #1e40af 0%, #2563eb 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(37,99,235,0.4);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+  
+  &:active {
+    transform: translateY(-1px);
+  }
 `;
 
 const SendIcon = (
@@ -349,7 +397,7 @@ const getSocialIcons = (isDark) => [
     )
   },
   {
-    label: "Instagram", 
+    label: "Instagram",
     url: "https://www.instagram.com/Sh_ri_ni_dhi/",
     icon: (
       <svg width="22" height="22" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -368,9 +416,9 @@ const getSocialIcons = (isDark) => [
         </defs>
         <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#instagram-gradient)"/>
         <rect x="25" y="25" width="150" height="150" rx="40" ry="40" fill="url(#purple-overlay)"/>
-        <rect x="50" y="50" width="100" height="100" rx="20" ry="20" fill="none" stroke={isDark ? "#ffffff" : "#f8fafc"} strokeWidth="6"/>
-        <circle cx="100" cy="100" r="25" fill="none" stroke={isDark ? "#ffffff" : "#f8fafc"} strokeWidth="6"/>
-        <circle cx="130" cy="70" r="6" fill={isDark ? "#ffffff" : "#f8fafc"}/>
+        <rect x="50" y="50" width="100" height="100" rx="20" ry="20" fill="none" stroke="white" strokeWidth="6"/>
+        <circle cx="100" cy="100" r="25" fill="none" stroke="white" strokeWidth="6"/>
+        <circle cx="130" cy="70" r="6" fill="white"/>
       </svg>
     )
   }
@@ -427,111 +475,207 @@ export default function Contact() {
         }}
       />
       <SpreadRow>
-        <LeftInfo isDark={isDark}>
-          <ContactHeading isDark={isDark}>Contact Information</ContactHeading>
-          <ContactBlurb isDark={isDark}>
-            Feel free to reach out if you're looking for a developer, have a question, or just want to connect.
-          </ContactBlurb>
-          <ContactDetail>
-            <ContactIcon
-              isDark={isDark}
-              as="a"
-              href="https://www.google.com/maps/place/Mangalore,+Karnataka"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="View on Google Maps"
-              style={{ display: "flex" }}
+        <motion.div
+          initial={{ opacity: 0, x: -50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true }}
+        >
+          <LeftInfo isDark={isDark}>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
             >
-              <LocationIcon isDark={isDark} />
-            </ContactIcon>
-            <DetailBody>
-              <DetailLabel isDark={isDark}>Location</DetailLabel>
-              <DetailValue isDark={isDark}>Mangalore, Karnataka, India</DetailValue>
-            </DetailBody>
-          </ContactDetail>
-          <ContactDetail>
-            <ContactIcon
-              isDark={isDark}
-              as="a"
-              href="mailto:shrinidhiupadhyaya00@gmail.com"
-              title="Send Email"
-              style={{ display: "flex" }}
+              <ContactHeading isDark={isDark}>Contact Information</ContactHeading>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: -15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
             >
-              <EmailIcon isDark={isDark} />
-            </ContactIcon>
-            <DetailBody>
-              <DetailLabel isDark={isDark}>Email</DetailLabel>
-              <DetailValue isDark={isDark}>shrinidhiupadhyaya00@gmail.com</DetailValue>
-            </DetailBody>
-          </ContactDetail>
-          <ContactDetail>
-            <ContactIcon isDark={isDark}><PhoneIcon isDark={isDark} /></ContactIcon>
-            <DetailBody>
-              <DetailLabel isDark={isDark}>Phone</DetailLabel>
-              <DetailValue isDark={isDark}>+91 7204200386</DetailValue>
-            </DetailBody>
-          </ContactDetail>
-          <ContactSocials>
-            {socials.map((social, idx) => (
-              <SocialBtn
-                key={idx}
-                isDark={isDark}
-                href={social.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={social.label}
-              >
-                {social.icon}
-              </SocialBtn>
-            ))}
-          </ContactSocials>
+              <ContactBlurb isDark={isDark}>
+                Feel free to reach out if you're looking for a developer, have a question, or just want to connect.
+              </ContactBlurb>
+            </motion.div>
+          {[
+            {
+              icon: <LocationIcon isDark={isDark} />,
+              label: "Location",
+              value: "Mangalore, Karnataka, India",
+              href: "https://www.google.com/maps/place/Mangalore,+Karnataka",
+              title: "View on Google Maps"
+            },
+            {
+              icon: <EmailIcon isDark={isDark} />,
+              label: "Email",
+              value: "shrinidhiupadhyaya00@gmail.com",
+              href: "mailto:shrinidhiupadhyaya00@gmail.com",
+              title: "Send Email"
+            },
+            {
+              icon: <PhoneIcon isDark={isDark} />,
+              label: "Phone",
+              value: "+91 7204200386"
+            }
+          ].map((detail, idx) => (
+            <motion.div
+              key={detail.label}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 + idx * 0.1 }}
+              viewport={{ once: true }}
+            >
+              <ContactDetail>
+                <ContactIcon
+                  isDark={isDark}
+                  as={detail.href ? "a" : "div"}
+                  href={detail.href}
+                  target={detail.href ? "_blank" : undefined}
+                  rel={detail.href ? "noopener noreferrer" : undefined}
+                  title={detail.title}
+                  style={{ display: "flex" }}
+                >
+                  {detail.icon}
+                </ContactIcon>
+                <DetailBody>
+                  <DetailLabel isDark={isDark}>{detail.label}</DetailLabel>
+                  <DetailValue isDark={isDark}>{detail.value}</DetailValue>
+                </DetailBody>
+              </ContactDetail>
+            </motion.div>
+          ))}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+            viewport={{ once: true }}
+          >
+            <ContactSocials>
+              {socials.map((social, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 1.0 + idx * 0.1 }}
+                  viewport={{ once: true }}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <SocialBtn
+                    isDark={isDark}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={social.label}
+                  >
+                    {social.icon}
+                  </SocialBtn>
+                </motion.div>
+              ))}
+            </ContactSocials>
+          </motion.div>
         </LeftInfo>
+        </motion.div>
 
-        <RightForm isDark={isDark}>
-          <RightHeading isDark={isDark}>Get In Touch</RightHeading>
-          <ContactForm onSubmit={handleSubmit}>
-            <Row>
-              <Input
-                isDark={isDark}
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
-              <Input
-                isDark={isDark}
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-            </Row>
-            <Input
-              isDark={isDark}
-              type="text"
-              name="subject"
-              placeholder="Subject"
-              value={form.subject}
-              onChange={handleChange}
-              required
-            />
-            <Textarea
-              isDark={isDark}
-              name="message"
-              placeholder="Message"
-              value={form.message}
-              onChange={handleChange}
-              required
-            />
-            <SubmitBtn type="submit" disabled={loading} isDark={isDark}>
-              {SendIcon} {loading ? "Sending..." : "Send Message"}
-            </SubmitBtn>
-          </ContactForm>
-        </RightForm>
+        <motion.div
+          initial={{ opacity: 0, x: 50 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          viewport={{ once: true }}
+        >
+          <RightForm isDark={isDark}>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <RightHeading isDark={isDark}>Get In Touch</RightHeading>
+            </motion.div>
+                        <ContactForm onSubmit={handleSubmit}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                <Row>
+                  <Input
+                    isDark={isDark}
+                    type="text"
+                    name="name"
+                    placeholder="Name"
+                    value={form.name}
+                    onChange={handleChange}
+                    required
+                    whileFocus={{ scale: 1.02 }}
+                  />
+                  <Input
+                    isDark={isDark}
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    value={form.email}
+                    onChange={handleChange}
+                    required
+                    whileFocus={{ scale: 1.02 }}
+                  />
+                </Row>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+                viewport={{ once: true }}
+              >
+                <Input
+                  isDark={isDark}
+                  type="text"
+                  name="subject"
+                  placeholder="Subject"
+                  value={form.subject}
+                  onChange={handleChange}
+                  required
+                  whileFocus={{ scale: 1.02 }}
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <Textarea
+                  isDark={isDark}
+                  name="message"
+                  placeholder="Message"
+                  value={form.message}
+                  onChange={handleChange}
+                  required
+                  whileFocus={{ scale: 1.02 }}
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+                viewport={{ once: true }}
+              >
+                <SubmitBtn 
+                  type="submit" 
+                  disabled={loading}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {SendIcon} {loading ? "Sending..." : "Send Message"}
+                </SubmitBtn>
+              </motion.div>
+            </ContactForm>
+          </RightForm>
+        </motion.div>
       </SpreadRow>
     </ContactSection>
   );

@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { FaJava, FaReact, FaNodeJs, FaAws, FaLinux } from "react-icons/fa";
 import { SiMongodb, SiPostgresql, SiDocker, SiSpringboot } from "react-icons/si";
-import { useTheme } from "../contexts/DarkThemeContext";
 
 const SkillsContainer = styled.div`
   display: grid;
@@ -92,7 +91,6 @@ const skills = [
 
 export default function EnhancedSkillsGrid() {
   const [hoveredSkill, setHoveredSkill] = useState(null);
-  const { isDark } = useTheme();
 
   return (
     <SkillsContainer>
@@ -144,7 +142,7 @@ export default function EnhancedSkillsGrid() {
           
           <SkillName
             animate={hoveredSkill === skill.name ? {
-              color: isDark ? "#ffffff" : "#1e293b",
+              color: "#fff",
               scale: 1.1
             } : {
               color: "#2563eb",

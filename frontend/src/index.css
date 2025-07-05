@@ -57,6 +57,39 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+/* Hero Name No-Wrap Global Override */
+h1[style*="whiteSpace"] {
+  white-space: nowrap !important;
+  min-width: max-content !important;
+  width: max-content !important;
+  overflow: visible !important;
+  word-break: keep-all !important;
+  text-wrap: nowrap !important;
+  word-wrap: normal !important;
+  text-overflow: visible !important;
+  max-width: none !important;
+  flex-shrink: 0 !important;
+}
+
+h1[style*="whiteSpace"] div {
+  white-space: nowrap !important;
+  min-width: max-content !important;
+  width: max-content !important;
+  overflow: visible !important;
+  word-break: keep-all !important;
+  text-wrap: nowrap !important;
+  word-wrap: normal !important;
+  text-overflow: visible !important;
+  max-width: none !important;
+}
+
+/* Additional override for the specific character reveal spans */
+h1[style*="whiteSpace"] span {
+  white-space: nowrap !important;
+  word-break: keep-all !important;
+  text-wrap: nowrap !important;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

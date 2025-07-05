@@ -47,7 +47,7 @@ const CenterIcon = styled(motion.div).withConfig({
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: ${props => props.isDark ? '#ffffff' : '#1e293b'};
+  color: ${props => props.isDark ? '#ffffff' : '#ffffff'};
   box-shadow: ${props => props.isDark
     ? '0 8px 32px rgba(37, 99, 235, 0.3)'
     : '0 8px 32px rgba(59, 130, 246, 0.3)'

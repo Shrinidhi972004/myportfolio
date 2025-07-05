@@ -1,0 +1,43 @@
+/* Ultra aggressive no-wrap override for hero name */
+.hero-name-no-wrap,
+.hero-name-no-wrap *,
+.hero-name-no-wrap h1,
+.hero-name-no-wrap div,
+.hero-name-no-wrap span {
+  white-space: nowrap !important;
+  min-width: max-content !important;
+  width: max-content !important;
+  overflow: visible !important;
+  word-break: keep-all !important;
+  text-wrap: nowrap !important;
+  word-wrap: normal !important;
+  text-overflow: visible !important;
+  max-width: none !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+  flex-basis: auto !important;
+  display: inline-block !important;
+}
+
+/* Desktop specific override */
+@media (min-width: 769px) {
+  .hero-name-no-wrap,
+  .hero-name-no-wrap *,
+  .hero-name-no-wrap h1,
+  .hero-name-no-wrap div,
+  .hero-name-no-wrap span {
+    white-space: nowrap !important;
+    min-width: max-content !important;
+    width: max-content !important;
+    overflow: visible !important;
+    word-break: keep-all !important;
+    text-wrap: nowrap !important;
+    word-wrap: normal !important;
+    text-overflow: visible !important;
+    max-width: none !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    flex-basis: auto !important;
+    display: inline-block !important;
+  }
+}

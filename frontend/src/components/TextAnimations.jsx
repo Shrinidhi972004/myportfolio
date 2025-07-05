@@ -3,8 +3,12 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 
 const TextContainer = styled.div`
-  overflow: hidden;
+  overflow: visible;
   position: relative;
+  white-space: nowrap;
+  min-width: max-content;
+  width: max-content;
+  display: inline-block;
 `;
 
 const AnimatedText = styled(motion.span)`
@@ -86,11 +90,26 @@ export function CharacterReveal({ children, delay = 0, className }) {
   const characters = children.split("");
   
   return (
-    <TextContainer className={className}>
+    <TextContainer 
+      className={className}
+      style={{ 
+        whiteSpace: 'nowrap !important',
+        minWidth: 'max-content !important',
+        width: 'max-content !important',
+        overflow: 'visible !important',
+        display: 'inline-block !important',
+        wordBreak: 'keep-all !important',
+        textWrap: 'nowrap !important'
+      }}
+    >
       {characters.map((char, i) => (
         <motion.span
           key={i}
-          style={{ display: "inline-block" }}
+          style={{ 
+            display: "inline-block",
+            whiteSpace: 'nowrap',
+            wordBreak: 'keep-all'
+          }}
           initial={{ opacity: 0, rotateY: 90 }}
           whileInView={{ opacity: 1, rotateY: 0 }}
           transition={{

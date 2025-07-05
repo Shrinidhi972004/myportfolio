@@ -38,26 +38,26 @@ export default function App() {
       <Navbar activeSection={activeSection} setActiveSection={setActiveSection} />
       
       <section id="home">
-          <Hero setActiveSection={setActiveSection} />
-        </section>
-        
-        <SectionSeparator icon={<FiUser />} />
-        
-        <section id="about">
-          <About />
-        </section>
-        
-        <SectionSeparator icon={<FiCode />} />
-        
-        <section id="projects">
-          <Projects />
-        </section>
-        
-        <SectionSeparator icon={<FiMail />} />
-        
-        <section id="contact">
-          <Contact />
-        </section>
+        <Hero setActiveSection={setActiveSection} />
+      </section>
+      
+      <SectionSeparator icon={<FiUser />} />
+      
+      <section id="about">
+        <About />
+      </section>
+      
+      <SectionSeparator icon={<FiCode />} />
+      
+      <section id="projects">
+        <Projects />
+      </section>
+      
+      <SectionSeparator icon={<FiMail />} />
+      
+      <section id="contact">
+        <Contact />
+      </section>
     </DarkThemeProvider>
   );
 }

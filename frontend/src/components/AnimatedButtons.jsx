@@ -1,7 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useTheme } from "../contexts/DarkThemeContext";
+import { shouldForwardProp } from '../utils/propFilter';
 
 const ripple = keyframes`
   0% {
@@ -19,7 +19,9 @@ const shimmer = keyframes`
   100% { transform: translateX(100%); }
 `;
 
-const BaseButton = styled(motion.button)`
+const BaseButton = styled(motion.button).withConfig({
+  shouldForwardProp,
+})`
   position: relative;
   overflow: hidden;
   border: none;
@@ -35,17 +37,11 @@ const BaseButton = styled(motion.button)`
 `;
 
 const PrimaryButton = styled(BaseButton)`
-  background: ${props => props.isDark 
-    ? 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)'
-    : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
-  };
-  color: ${props => props.isDark ? '#ffffff' : '#ffffff'};
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  color: white;
   padding: 1rem 2rem;
   border-radius: 50px;
-  box-shadow: ${props => props.isDark
-    ? '0 4px 15px rgba(37, 99, 235, 0.3)'
-    : '0 4px 15px rgba(59, 130, 246, 0.3)'
-  };
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
   
   &::before {
     content: '';
@@ -86,15 +82,9 @@ const GlowButton = styled(BaseButton)`
   }
   
   &:hover {
-    box-shadow: ${props => props.isDark
-      ? '0 0 30px rgba(37, 99, 235, 0.5)'
-      : '0 0 30px rgba(59, 130, 246, 0.5)'
-    };
-    color: ${props => props.isDark ? '#ffffff' : '#ffffff'};
-    background: ${props => props.isDark
-      ? 'rgba(37, 99, 235, 0.1)'
-      : 'rgba(59, 130, 246, 0.1)'
-    };
+    box-shadow: 0 0 30px rgba(37, 99, 235, 0.5);
+    color: white;
+    background: rgba(37, 99, 235, 0.1);
   }
 `;
 
@@ -114,7 +104,6 @@ export function AnimatedButton({
   className,
   ...props 
 }) {
-  const { isDark } = useTheme();
   const [ripples, setRipples] = useState([]);
 
   const handleClick = (e) => {
@@ -145,7 +134,6 @@ export function AnimatedButton({
 
   return (
     <ButtonComponent
-      isDark={isDark}
       className={className}
       onClick={handleClick}
       disabled={disabled}
@@ -171,8 +159,6 @@ export function AnimatedButton({
 }
 
 export function FloatingActionButton({ children, onClick, className, ...props }) {
-  const { isDark } = useTheme();
-  
   return (
     <motion.button
       className={className}
@@ -184,25 +170,19 @@ export function FloatingActionButton({ children, onClick, className, ...props })
         width: '60px',
         height: '60px',
         borderRadius: '50%',
-        background: isDark 
-          ? 'linear-gradient(135deg, #2563eb, #1e40af)'
-          : 'linear-gradient(135deg, #3b82f6, #2563eb)',
+        background: 'linear-gradient(135deg, #2563eb, #1e40af)',
         border: 'none',
-        color: '#ffffff',
+        color: 'white',
         cursor: 'pointer',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
-        boxShadow: isDark
-          ? '0 4px 20px rgba(37, 99, 235, 0.4)'
-          : '0 4px 20px rgba(59, 130, 246, 0.4)'
+        boxShadow: '0 4px 20px rgba(37, 99, 235, 0.4)'
       }}
       whileHover={{ 
         scale: 1.1,
-        boxShadow: isDark
-          ? '0 6px 25px rgba(37, 99, 235, 0.5)'
-          : '0 6px 25px rgba(59, 130, 246, 0.5)'
+        boxShadow: '0 6px 25px rgba(37, 99, 235, 0.5)'
       }}
       whileTap={{ scale: 0.9 }}
       initial={{ opacity: 0, scale: 0 }}

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTheme } from "../contexts/DarkThemeContext";
 
 const FloatingButton = styled(motion.button).withConfig({
-  shouldForwardProp: (prop) => !['whileHover', 'whileTap', 'initial', 'animate', 'exit', 'transition', 'theme'].includes(prop),
+  shouldForwardProp: (prop) => !['whileHover', 'whileTap', 'initial', 'animate', 'exit', 'transition'].includes(prop),
 })`
   position: fixed;
   bottom: 2rem;
@@ -17,7 +17,7 @@ const FloatingButton = styled(motion.button).withConfig({
     : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
   };
   border: none;
-  color: ${props => props.theme?.isDark ? '#ffffff' : '#ffffff'};
+  color: white;
   font-size: 1.5rem;
   cursor: pointer;
   z-index: 1000;
