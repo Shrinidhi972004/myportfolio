@@ -424,7 +424,7 @@ const getSocialIcons = (isDark) => [
   }
 ];
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_BACKEND_URL || "https://myportfolio-9n19.onrender.com";
 
 export default function Contact() {
   const { isDark } = useTheme();
