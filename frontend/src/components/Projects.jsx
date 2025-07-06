@@ -522,7 +522,7 @@ const projects = [
     desc: "A modern, responsive developer portfolio.",
     longDesc: "Portfolio site to showcase my projects, skills, and experience. Built with React and styled-components.",
     github: "https://github.com/Shrinidhi972004/myportfolio",
-    demo: "https://shrinidhi-portfolio.vercel.app/",
+    demo: "https://shrinidhi.space/",
     details: "A visually appealing and responsive portfolio website built with React and styled-components. Features include About, Skills, Projects, and Contact sections, as well as interactive UI elements and smooth animations. The site allows visitors to learn more about my background, explore my work, and connect easily.",
     img: portfolioImg
   }
