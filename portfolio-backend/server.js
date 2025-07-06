@@ -8,9 +8,9 @@ const app = express();
 
 
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:6969", "https://shrinidhi.space"], // allow both Vite dev server and production
+  origin: ["http://localhost:5173", "http://localhost:6969", "https://shrinidhi.space"],
   methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true, // if you ever need cookies or auth
+  credentials: true, 
 }));
 
 app.use(express.json());
@@ -29,8 +29,8 @@ app.post('/api/contact', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,   // your Gmail address
-        pass: process.env.EMAIL_PASS    // your Gmail app password
+        user: process.env.EMAIL_USER,  
+        pass: process.env.EMAIL_PASS    
       }
     });
 
